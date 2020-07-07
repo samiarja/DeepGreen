@@ -10,14 +10,16 @@ All the code for my master degree at ICNS -->
 - [Flattened features and labels](#flattened-features-and-labels)
 - [Balance Ratio for features and labels](#balance-ratio-for-features-and-labels)
 - [Classification Results](#classification-results)
-- [Unsupervised FE and supervised classification](#unsupervised-fe-and-supervised-classification)
-- [Supervised FE and supervised classification](#supervised-fe-and-supervised-classification)
+  - [Unsupervised FE and supervised classification](#unsupervised-fe-and-supervised-classification)
+  - [Supervised FE and supervised classification](#supervised-fe-and-supervised-classification)
 - [Feature Extraction 16 Neurons](#feature-extraction-16-neurons)
 - [Feature Map at inference](#feature-map-at-inference)
 - [Feature Map for each class](#feature-map-for-each-class)
 - [3x3 Neighboring pixels features](#3x3-neighboring-pixels-features)
 - [Case 1: No Overlap](#case-1-no-overlap)
-- [Input Data](#input-data)
+  - [Input Data](#input-data)
+  - [Feature Map at Inference](#feature-map-at-inference-1)
+
 
 <a name="desc1"></a>
 # Data Labelling
@@ -67,7 +69,7 @@ Labels across time          |  Flattened features |
 # Classification Results
 
 <a name="desc8"></a>
-# Unsupervised FE and supervised classification
+## Unsupervised FE and supervised classification
 
 |              | Balanced | Imbalanced |
 |:------------:|:--------:|:----------:|
@@ -78,7 +80,7 @@ Labels across time          |  Flattened features |
 |   Accuracy   |     51.0735    |      73.6277    |
 
 <a name="desc9"></a>
-# Supervised FE and supervised classification
+## Supervised FE and supervised classification
 
 <p align="center">
   <img width="1200" height="400" src="img/superfeast.png" width="500">
@@ -102,6 +104,10 @@ Labels across time          |  Flattened features |
 <a name="desc11"></a>
 # Feature Map at inference
 
+For this feature map, we linearly looped (no shuffling) through events data one time.
+
+Here the trained weight is used at inference without updating the threshold.
+
 <p align="center">
   <img width="600" height="300" src="img/feature_map.gif" width="500">
 </p>
@@ -109,7 +115,9 @@ Labels across time          |  Flattened features |
 <a name="desc12"></a>
 # Feature Map for each class
 
-FM Class label 1 - Circles          |  FM Class label 0 - Everything else |
+We splitted the feature maps for each class.
+
+FM for class Circles          |  FM for other class |
 :-------------------------:|:-------------------------:|
 [<img src="img/feature_map1.gif" width="1500"/>](img/feature_map1.gif) | [<img src="img/feature_map0.gif" width="1500"/>](img/feature_map0.gif) |
 
@@ -117,7 +125,7 @@ FM Class label 1 - Circles          |  FM Class label 0 - Everything else |
 # 3x3 Neighboring pixels features
 
 
-Neighboring pixels - Circles          |  Neighboring pixels  - Everything else |
+Neighboring pixels for class circle          |  Neighboring pixels for other class |
 :-------------------------:|:-------------------------:|
 [<img src="img/np1.gif" width="1500"/>](img/feature_map1.gif) | [<img src="img/np0.gif" width="1500"/>](img/feature_map0.gif) |
 
@@ -126,10 +134,17 @@ Neighboring pixels - Circles          |  Neighboring pixels  - Everything else |
 
 
 <a name="input-data"></a>
-# Input Data
+## Input Data
 
 <p align="center">
   <img width="500" height="500" src="img/case1_ts.gif" width="500">
+</p>
+
+<a name="feature-map-at-inference-1"></a>
+## Feature Map at Inference
+
+<p align="center">
+  <img width="500" height="500" src="img/input_data_time_surface.gif" width="500">
 </p>
 
 
@@ -173,8 +188,7 @@ Proposed results table:
 <td colspan=1>    <td colspan=4>Standard  <td colspan=4>Zero Noise <td colspan=4>Random Noise <td colspan=4>Gaussian Noise <td colspan=4>Activation Function Noise
 <tr>
 <td colspan=1> <td colspan=1>80/20 <td colspan=1>70/30 <td colspan=1>60/40
-<td colspan=1>50/50<td colspan=1>80/20 <td colspan=1>70/30 <td colspan=1>60/40
-<td colspan=1>50/50<td colspan=1>80/20 <td colspan=1>70/30 <td colspan=1>60/40
+<td colspan=1>50/50<td colspan=1>80/20 <labels.pngtd colspan=1>70/30 <td colspan=1>60/40
 <td colspan=1>50/50<td colspan=1>80/20 <td colspan=1>70/30 <td colspan=1>60/40
 <td colspan=1>50/50<td colspan=1>80/20 <td colspan=1>70/30 <td colspan=1>60/40
 <td colspan=1>50/50
