@@ -53,7 +53,7 @@ Class label 1 - Circles          |  Class label 0 - Everything else |
 
 Labels across time          |  Flattened features |
 :-------------------------:|:-------------------------:|
-[<img src="img/labels.svg" width="1620"/>](img/labels.png) | [<img src="img/features.png" width="1500"/>](img/features.png) |
+[<img src="img/labels.svg" width="1620"/>](img/labels.svg) | [<img src="img/features.png" width="1500"/>](img/features.png) |
 
 <a name="desc6"></a>
 # Balance Ratio for features and labels
