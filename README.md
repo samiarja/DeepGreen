@@ -19,6 +19,12 @@ All the code for my master degree at ICNS -->
 - [Case 1: No Overlap](#case-1-no-overlap)
   - [Input Data](#input-data)
   - [Feature Map at Inference](#feature-map-at-inference-1)
+  - [Events after labelling](#events-after-labelling-1)
+  - [Events Interpolation](#events-interpolation-1)
+  - [Additional Figures](#additional-figures)
+  - [Classification Results](#classification-results-1)
+    - [Unsupervised FEAST](#unsupervised-feast)
+    - [Supervised FEAST](#supervised-feast)
 
 
 <a name="desc1"></a>
@@ -147,6 +153,26 @@ Neighboring pixels for class circle          |  Neighboring pixels for other cla
   <img width="500" height="500" src="img/input_data_time_surface.gif" width="500">
 </p>
 
+
+<a name="events-after-labelling-1"></a>
+## Events after labelling
+
+
+<a name="Events Interpolation-1"></a>
+## Events Interpolation
+
+
+<a name="additional-figures"></a>
+## Additional Figures
+
+<a name="classification-results"></a>
+## Classification Results
+
+<a name="unsupervised-feast"></a>
+### Unsupervised FEAST
+
+<a name="superised-feast"></a>
+### Supervised FEAST
 
 <!-- **Step 1:** Performance metric
 
