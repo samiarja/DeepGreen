@@ -1,7 +1,7 @@
 %% Label data
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If COLORDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TD = struct('x',single(TD(1e6:end,1)),'y',single(TD(1e6:end,2)),'p',single(TD(1e6:end,3)),'ts',TD(1e6:end,4));
+TD = struct('x',single(TD.x(1:2500000)),'y',single(TD.y(1:2500000)),'p',single(TD.p(1:2500000)),'ts',TD.ts(1:2500000));
 % TD.ts = TD.ts - TD.ts(1,1);
 % TD.ts = single(TD.ts);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If COLORDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,12 +51,12 @@ TD.ts = TD.ts/TD.ts(end)*timeEnd;
 
 %%% interpolating  ---------------------------
 if ~exist('userInputCellArrayRadius','var')
-    userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
+%     userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
     userInputCellArrayRadiusInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArrayRadius);
     userInputCellArrayRadiusInterped = real(userInputCellArrayRadiusInterped);
     userInputCellArrayInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArray);
 else
-    userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
+%     userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
     userInputCellArrayRadiusInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArrayRadius);
     userInputCellArrayRadiusInterped = real(userInputCellArrayRadiusInterped);
     userInputCellArrayInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArray);
@@ -159,6 +159,8 @@ scatter3(TD.x(find_all_ground_truth,1),TD.y(find_all_ground_truth,1),TD.ts(find_
 % labelOccurencesHistorgam2 = hist(TD.c,countLabel2);
 % resultcountLabel2 = [countLabel2; labelOccurencesHistorgam2]
 
+
+
 %% FEAST Algorithm, Unsupervised feature extraction
 idx = 0;
 nTD = numel(TD.x);
@@ -188,7 +190,7 @@ thresholdArray_all = [];
 R = 7;
 D = 2*R + 1; % D = 21
 %number of neurons
-nNeuron = 16;
+nNeuron = 9;
 binc = 1:nNeuron;
 %learning rate
 eta = 0.001;
@@ -244,13 +246,15 @@ index = a(ind);
 missingCount = 0;
 % for epoch = 1:1
 % nextTimeSample = TD.ts(1,1)+displayFreq;
-for epoch = 1:2
+
+for epoch = 1:4
+    
     for idx = 1:nTD
         x = TD.x(idx)+1;
         y = TD.y(idx)+1;
         t = TD.ts(idx);
         p = TD.p(idx);
-%         c = TD.c(idx);
+        %         c = TD.c(idx);
         T(x,y) = t;
         P(x,y) = p;
         
@@ -275,7 +279,7 @@ for epoch = 1:2
                 threshArray(winnerNeuron)   = threshArray(winnerNeuron) + thresholdRise;     % example value of  thresholdFall is 0.001
                 countArray(winnerNeuron) = countArray(winnerNeuron) + 1;
             end
-%             thresholdArray_all(idx,:) = threshArray';
+            %             thresholdArray_all(idx,:) = threshArray';
             winnerNeuronArray(idx) = winnerNeuron;
             
             T_F(x,y,winnerNeuron) = t;
@@ -380,8 +384,10 @@ for epoch = 1:2
         
     end
     %     end
-    epoch = epoch + 1;
+    %     epoch
+    
 end
+
 % countsOccurences = hist(winnerNeuronArray',binc);
 % result = [binc; countsOccurences];
 % fig2 = figure(56799);
@@ -464,7 +470,7 @@ for idx = 1:nEvents
             Valididx = Valididx + 1;
             winnerNeuronArray(Valididx) = winnerNeuron;
             
-            %         if TD.c(idx) == 1
+            %         if TLook at this oneD.c(idx) == 1
             %             count0 = count0 + 1;
             %             countNeuron(1,winnerNeuron) = count0;
             %         else
@@ -642,7 +648,7 @@ Y = single(labels);
 % xCoordArray = TD.x(1:nEventsToSkip:end,:);
 % yCoordArray = TD.y(1:nEventsToSkip:end,:);
 % tsCoordArray = TD.ts(1:nEventsToSkip:end,:);
-20
+
 %%%%%%%%%%%%%%%%%%%%%%%%Only for this dataset "LATEST_fruit10_10mData_labelsOnly_25Labels_with_FEAST_VariablesOnly_USETHIS"%%%%%%%%%%%%%%%%%%%%%%%%
 findNaN = find(isnan(Y));
 % xCoordArray = xCoordArray(1:findNaN(1),:);
@@ -654,6 +660,8 @@ Y = Y(1:findNaN(1)-1,1);
 % Y = Y(findZeros(1):findZeros(end),1);
 figure(678678);imagesc(X);
 figure(678679);plot(Y);
+xlabel("Event Index");
+ylabel("Label");
 
 % xCoordArray = xCoordArray(1:findNaN(1),:);20
 % yCoordArray = yCoordArray(1:findNaN(1),1);

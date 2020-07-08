@@ -18,8 +18,8 @@ All the code for my master degree at ICNS -->
 - [3x3 Neighboring pixels features](#3x3-neighboring-pixels-features)
 - [Case 1: No Overlap](#case-1-no-overlap)
   - [Input Data](#input-data)
-  - [Feature Map at Inference](#feature-map-at-inference-1)
   - [Events after labelling](#events-after-labelling-1)
+  - [Feature Map at Inference](#feature-map-at-inference-1)
   - [Events Interpolation](#events-interpolation-1)
   - [Additional Figures](#additional-figures)
   - [Classification Results](#classification-results-1)
@@ -146,6 +146,13 @@ Neighboring pixels for class circle          |  Neighboring pixels for other cla
   <img width="500" height="500" src="img/case1_ts.gif" width="500">
 </p>
 
+<a name="events-after-labelling-1"></a>
+## Events after labelling
+
+Class label 1 - Circles          |  Class label 0 - Everything else |
+:-------------------------:|:-------------------------:|
+[<img src="img/case1_class1.gif" width="1500"/>](img/case1_class1.gif) | [<img src="img/case1_class0.gif" width="1500"/>](img/case1_class1.gif) |
+
 <a name="feature-map-at-inference-1"></a>
 ## Feature Map at Inference
 
@@ -154,22 +161,38 @@ Neighboring pixels for class circle          |  Neighboring pixels for other cla
 </p>
 
 
-<a name="events-after-labelling-1"></a>
-## Events after labelling
-
-
 <a name="Events Interpolation-1"></a>
 ## Events Interpolation
 
+<p align="center">
+  <img width="1000" height="500" src="img/labels_case1.svg" width="500">
+</p>
 
 <a name="additional-figures"></a>
 ## Additional Figures
 
+Labels across time          |  Flattened features |
+:-------------------------:|:-------------------------:|
+[<img src="img/labelplot_case1.svg" width="1620"/>](img/labelplot_case1.svg) | [<img src="img/featureplot_case1.svg" width="1500"/>](img/featureplot_case1.svg) |
+
 <a name="classification-results"></a>
 ## Classification Results
 
+|            | Class 0 | Class 1 | Balancing Ratio |
+|:----------:|:-------:|:-------:|:-------:|
+| Imbalanced |  1627220 |  719827 |    1:2     |
+|  Balanced  |  719827 |  719827 |    1:1     |
+
 <a name="unsupervised-feast"></a>
 ### Unsupervised FEAST
+
+|              | Balanced | Imbalanced |
+|:------------:|:--------:|:----------:|
+|  Sensitivity |     0.3937     |      0.9995     |
+|  Specificity |     0.6425     |      0.0005     |
+| Informedness |     0.0362     |      -0.3874     |
+|     RMSE     |     0.5074    |      0.4712     |
+|   Accuracy   |     51.7817    |      69.2654    |
 
 <a name="superised-feast"></a>
 ### Supervised FEAST

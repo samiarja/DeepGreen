@@ -36,7 +36,7 @@ ys = 480;
 %if Prophesee
 S = zeros(xs,ys); T = S; P = double(T);
 
-% ON and OFF event
+% ON and OFF eventinput
 nTD = numel(TD.x);
 seconds = TD.ts/1e6;
 tau = 4*1e4;
@@ -49,35 +49,35 @@ writerObj = VideoWriter('~/sami/Dataset/avi/case1.avi');
 writerObj.FrameRate = 30;
 open(writerObj);
 
-for idx = 1:2500000
+for idx = 600000:nTD
     
     x = TD.x(idx)+1;
     y = TD.y(idx)+1;
     t = TD.ts(idx);
     p = TD.p(idx);
-%     label = TD.c(idx);
+    label = TD.c(idx);
     % T maps the time of the most recent event to spatial pixel location
-    %     if label == 1
-    T(x,y) = t;
-    % P maps the polarity of the most recent event to spatial pixel location
-    %     P(x,y) = p;
-    if t > nextTimeSample
-        nextTimeSample = max(nextTimeSample + displayFreq,t);
-        %exponential decay index surface
-        S = exp(double((T-t))/tau);
-        %         subplot(2,1,1)
-        set(ss,'CData',S)
-        drawnow limitrate
-        view([90 90])
-        title([num2str(idx,'%10.2e')])
-        set(gca,'visible','off')
-        set(findall(gca, 'type', 'text'), 'visible', 'on')
-        %         title('Time Surface - Blue Filter')
-        darkBackground(fig,[0 0 0],[0 0 0])
-        F = getframe(gcf) ;
-        writeVideo(writerObj, F);
+    if label == 1
+        T(x,y) = t;
+        % P maps the polarity of the most recent event to spatial pixel location
+        %     P(x,y) = p;
+        if t > nextTimeSample
+            nextTimeSample = max(nextTimeSample + displayFreq,t);
+            %exponential decay index surface
+            S = exp(double((T-t))/tau);
+            %         subplot(2,1,1)
+            set(ss,'CData',S)
+            drawnow limitrate
+            view([90 90])
+            title([num2str(idx,'%10.2e')])
+            set(gca,'visible','off')
+            set(findall(gca, 'type', 'text'), 'visible', 'on')
+            %         title('Time Surface - Blue Filter')
+            darkBackground(fig,[0 0 0],[0 0 0])
+            F = getframe(gcf) ;
+            writeVideo(writerObj, F);
+        end
     end
-    %     end
 end
 close(writerObj);
 fprintf('Sucessfully generated the video\n')

@@ -58,7 +58,7 @@ for idx = 1:nTD
             count0 = count0 + 1;
             countNeuron(1,winnerNeuron) = count0;
             
-        else
+        else- Everything else
 %             figure(5);
 %             S_D = exp(double(T_F-t)/tau);
 %             imagesc(S_D(:,:,winnerNeuron));view([90 90]);
