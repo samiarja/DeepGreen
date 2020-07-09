@@ -178,10 +178,19 @@ Labels across time          |  Flattened features |
 <a name="classification-results"></a>
 ## Classification Results
 
+For unsupervised FEAST:
+
 |            | Class 0 | Class 1 | Balancing Ratio |
 |:----------:|:-------:|:-------:|:-------:|
 | Imbalanced |  1627220 |  719827 |    1:2     |
 |  Balanced  |  719827 |  719827 |    1:1     |
+
+For supervised FEAST:
+
+|            | Class 0 | Class 1 | Balancing Ratio |
+|:----------:|:-------:|:-------:|:-------:|
+| Imbalanced |  3520571 |  1173523 |    1:3     |
+|  Balanced  |  1173523 |  1173523 |    1:1     |
 
 <a name="unsupervised-feast"></a>
 ### Unsupervised FEAST
@@ -196,6 +205,15 @@ Labels across time          |  Flattened features |
 
 <a name="superised-feast"></a>
 ### Supervised FEAST
+
+
+|              | Balanced | Imbalanced |
+|:------------:|:--------:|:----------:|
+|  Sensitivity |     0.7375     |      0.9344     |
+|  Specificity |     0.7558     |      0.3867     |
+| Informedness |     0.4934     |      0.3211     |
+|     RMSE     |     0.4468    |      0.4149     |
+|   Accuracy   |     74.6689    |      79.7576    |
 
 <!-- **Step 1:** Performance metric
 

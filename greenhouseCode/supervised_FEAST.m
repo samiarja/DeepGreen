@@ -107,8 +107,8 @@ scatter3(TD.x(find_all_ground_truth,1),TD.y(find_all_ground_truth,1),TD.ts(find_
 idx = 0;
 nTD = numel(TD.x);
 
-xs = 346;
-ys = 260;
+xs = 640;
+ys = 480;
 
 S = zeros(xs,ys); T = S; P = double(T);
 
@@ -439,6 +439,7 @@ if length(X0) < length(X1)
 else
     X0 = X0(1:length(X1),:);
 end
+
 % figure(76768);imagesc(X0)
 % figure(76769);imagesc(X1)
 X = [X1;X0];
@@ -446,4 +447,11 @@ Y = nan(length(X),1);
 Y(1:length(X1)/2)=1;
 findnan = find(isnan(Y));
 Y(findnan(1):end)=0;
+
+nEventAfterSkip = size(X,1);
+shuffledIndex = randperm(nEventAfterSkip);
+
+X = X(shuffledIndex,:);
+Y = Y(shuffledIndex,:);
+
 
