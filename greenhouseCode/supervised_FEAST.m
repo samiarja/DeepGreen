@@ -346,7 +346,7 @@ for threshold = 1:numel(thresholdArray_all(:,1))
 end
 
 %% Inference
-wFrozen = w;
+wFrozen = w2;
 downSampleFactor = 10;
 % figure(432432);
 % pp = plot(winnerNeuronArray); grid on;
@@ -372,55 +372,55 @@ for idx = 1:nTD
     y = TD.y(idx)+1;
     t = TD.ts(idx);
     p = TD.p(idx);
-%     c = TD.c(idx);
+    c = TD.c(idx);
     T(x,y) = t;
     P(x,y) = p;
     
-    %     if c == 0
-    if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
-        
-        ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
-        
-        ROI_norm             = ROI/norm(ROI);
-        ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
-        dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
-        [C,winnerNeuron ]       = max(dotProds);
-        
-        winnerNeuronArray(idx) = winnerNeuron;
-        
-%         if TD.c(idx) == 1
-%             count0 = count0 + 1;
-%             countNeuron(1,winnerNeuron) = count0;
-%         else
-%             count1 = count1 + 1;
-%             countNeuron(2,winnerNeuron) = count1;
-%         end
-        
-        T_F(x,y,winnerNeuron) = t;
-        P_F(x,y,winnerNeuron) = p;
-        
-        if t > nextTimeSample
-            idx
-            winnerNeuron
+    if c == 1
+        if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
             
-            nextTimeSample = max(nextTimeSample + displayFreq,t);
+            ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
             
-            S_F = exp((T_F-t)/tau/3);
-            figure(8)
-            for iNeuron = 1:nNeuron
-                subplot(sqNeuron,sqNeuron,iNeuron)
-                imagesc(S_F(:,:,iNeuron)); colormap(hot);
-                view([90 90]);
-                set(gca,'visible','off');
-                set(findall(gca, 'type', 'text'), 'visible', 'on');
+            ROI_norm             = ROI/norm(ROI);
+            ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
+            dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
+            [C,winnerNeuron ]       = max(dotProds);
+            
+            winnerNeuronArray(idx) = winnerNeuron;
+            
+            %         if TD.c(idx) == 1
+            %             count0 = count0 + 1;
+            %             countNeuron(1,winnerNeuron) = count0;
+            %         else
+            %             count1 = count1 + 1;
+            %             countNeuron(2,winnerNeuron) = count1;
+            %         end
+            
+            T_F(x,y,winnerNeuron) = t;
+            P_F(x,y,winnerNeuron) = p;
+            
+            if t > nextTimeSample
+                idx
+                winnerNeuron
                 
+                nextTimeSample = max(nextTimeSample + displayFreq,t);
+                
+                S_F = exp((T_F-t)/tau/3);
+                figure(8)
+                for iNeuron = 1:nNeuron
+                    subplot(sqNeuron,sqNeuron,iNeuron)
+                    imagesc(S_F(:,:,iNeuron)); colormap(hot);
+                    view([90 90]);
+                    set(gca,'visible','off');
+                    set(findall(gca, 'type', 'text'), 'visible', 'on');
+                    
+                end
+                
+                eta = eta * 0.999;
+                drawnow
             end
-            
-            eta = eta * 0.999;
-            drawnow
         end
     end
-    %     end
 end
 % 
 % fig3 = figure(56756);
@@ -438,7 +438,7 @@ end
 tic;
 X_original = nan(nEvents,9*nNeuron);
 % coordinate = zeros(nEvents, 3);
-wFrozen = w;
+wFrozen = w2;
 downSampleFactor = 10;
 
 xdMax = round(xs/downSampleFactor);
@@ -478,47 +478,51 @@ for idx = 1:nEvents
     y = TD.y(idx);
     xd = round(x/downSampleFactor);
     yd = round(y/downSampleFactor);
+    c = TD.c(idx);
     p = TD.p(idx);
     t =  TD.ts(idx);
-    T(x,y) = t;
-    P(x,y) = p;
     
-    if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
+    if c == 1
+        T(x,y) = t;
+        P(x,y) = p;
         
-        ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
-        
-        if xd>1 && yd>1 &&xd<xdMax && yd<ydMax  % figure out how to find xydMax
-            ROI_norm             = ROI/norm(ROI);
-            ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
-            dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
-            [C,winnerNeuron ]       = max(dotProds);
+        if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
             
-            Valididx = Valididx + 1;
-            winnerNeuronArray(Valididx) = winnerNeuron;
+            ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
             
-            T_F(x,y,winnerNeuron) = t;
-            P_F(x,y,winnerNeuron) = p;
-            
-            T_FdSimple(xd,yd,winnerNeuron) = t;
-            P_FdSimple(xd,yd,winnerNeuron) = p;
-            
-            if isinf(T_FdSimple(xd,yd,winnerNeuron))
+            if xd>1 && yd>1 &&xd<xdMax && yd<ydMax  % figure out how to find xydMax
+                ROI_norm             = ROI/norm(ROI);
+                ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
+                dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
+                [C,winnerNeuron ]       = max(dotProds);
+                
+                Valididx = Valididx + 1;
+                winnerNeuronArray(Valididx) = winnerNeuron;
+                
+                T_F(x,y,winnerNeuron) = t;
+                P_F(x,y,winnerNeuron) = p;
+                
                 T_FdSimple(xd,yd,winnerNeuron) = t;
-                T_FdSimple(xd,yd,winnerNeuron) = p;
-            else
-                T_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*T_FdSimple(xd,yd,winnerNeuron) + beta*t;
-                P_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*P_FdSimple(xd,yd,winnerNeuron) + beta*p;
+                P_FdSimple(xd,yd,winnerNeuron) = p;
+                
+                if isinf(T_FdSimple(xd,yd,winnerNeuron))
+                    T_FdSimple(xd,yd,winnerNeuron) = t;
+                    T_FdSimple(xd,yd,winnerNeuron) = p;
+                else
+                    T_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*T_FdSimple(xd,yd,winnerNeuron) + beta*t;
+                    P_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*P_FdSimple(xd,yd,winnerNeuron) + beta*p;
+                end
+                
+                % at each event (regardless of label) populate X with the
+                % neighbouring 8 pixels from the downsampled feature map
+                T_Fd_featureContext = T_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
+                P_Fd_featureContext = P_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
+                
+                S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
+                
+                %             S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
+                X_original(Valididx,:) = S_Fd_featureContext(:)'; % X matrix. to later be split into Xtrain and Xtest
             end
-            
-            % at each event (regardless of label) populate X with the
-            % neighbouring 8 pixels from the downsampled feature map
-            T_Fd_featureContext = T_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
-            P_Fd_featureContext = P_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
-            
-            S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
-            
-            %             S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
-            X_original(Valididx,:) = S_Fd_featureContext(:)'; % X matrix. to later be split into Xtrain and Xtest
         end
     end
 end

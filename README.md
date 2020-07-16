@@ -214,7 +214,7 @@ For supervised FEAST:
 <a name="feature-extraction"></a>
 #### Feature Extraction
 
-In this experiment, for each ROI we check if it fall in class 1 or class 0, we only selected two neurons for each class for training.
+In this experiment, for each incoming events we check if the ROI has events belong to class 1 or class 0. Then two neurons for each class are selected to train FEAST to learn features sepraterly from each class. 
 
 <p align="center">
   <img width="1000" height="500" src="img/supervisedfeatureextraction.gif" width="500">
@@ -225,10 +225,15 @@ In this experiment, for each ROI we check if it fall in class 1 or class 0, we o
 
 Class 1          |  Class 0 |
 :-------------------------:|:-------------------------:|
-[<img src="img/X1_supervised_2neurons.svg" width="1620"/>](img/X1_supervised_2neurons.svg) | [<img src="img/X0_supervised_2neurons.svg" width="1500"/>](img/X0_supervised_2neurons.svg) |
+[<img src="img/X1_supervised_2neurons_featureplot.svg" width="1620"/>](img/X1_supervised_2neurons_featureplot.svg) | [<img src="img/X0_supervised_2neurons_featureplot.svg" width="1500"/>](img/X0_supervised_2neurons_featureplot.svg) |
 
 <a name="threshold-change"></a>
 #### Threshold change
+
+We monitered the threshold change for each neurons during training.
+
+Initial Threshold is 0.001. It is up by 0.001 and down by 0.003.
+
 
 Class 1          |  Class 0 |
 :-------------------------:|:-------------------------:|
@@ -239,11 +244,24 @@ Class 1          |  Class 0 |
 
 |              | Balanced | Imbalanced |
 |:------------:|:--------:|:----------:|
-|  Sensitivity |     0.7375     |      0.9344     |
-|  Specificity |     0.7558     |      0.3867     |
-| Informedness |     0.4934     |      0.3211     |
-|     RMSE     |     0.4468    |      0.4149     |
-|   Accuracy   |     74.6689    |      79.7576    |
+|  Sensitivity |     0.7441     |      0.8791     |
+|  Specificity |     0.9226     |      0.6742     |
+| Informedness |     0.6666     |      0.5533     |
+|     RMSE     |     0.3476 &plusmn; 0.0009  |      0.3352 &plusmn; 0.00075    |
+|  Linear Classifier Accuracy (%)  |     80.9937 &plusmn; 0.0   |       79.1488 &plusmn; 0.0   |
+|   ELM Accuracy (%)               |       83.36 &plusmn; 0.057     |      82.89 &plusmn;  0.0365      |
+
+RMSE - Balanced          |  Accuracy - Balanced |
+:-------------------------:|:-------------------------:|
+[<img src="img/rmse_50iter.svg" width="1620"/>](img/rmse_50iter.svg) | [<img src="img/acc_50iter.svg" width="1500"/>](img/acc_50iter.svg) |
+
+RMSE - Imbalanced          |  Accuracy - Imbalanced |
+:-------------------------:|:-------------------------:|
+[<img src="img/rmse_50iter_imb.svg" width="1620"/>](img/rmse_50iter_imb.svg) | [<img src="img/acc_50iter_imb.svg" width="1500"/>](img/acc_50iter_imb.svg) |
+
+Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
+:-------------------------:|:-------------------------:|
+[<img src="img/cm_balanced.svg" width="1620"/>](img/.svg) | [<img src="img/cm_imbalanced.svg" width="1500"/>](img/cm_imbalanced.svg) |
 
 <!-- **Step 1:** Performance metric
 

@@ -771,11 +771,14 @@ Ytest(:,2) = ~(Ytest(:,1));
 % Xtrain(isinf(Xtrain))=1;
 % Xtest(isinf(Xtest))=1;
 
-% figure(312311);
-% imagesc(X); colorbar
+figure(312311);
+imagesc(X0); colorbar
 % 
 % figure(312312);
 % plot(movmean(Y(:,1),100)); colorbar
+
+% compute std error for acc
+% stderror = std(testacc)/sqrt(length(testacc))
 
 % Ytrain(isnan(Ytrain))=1;
 % Ytest(isnan(Ytest))=1;
@@ -790,7 +793,7 @@ toc;
 %% Classification linear/ELM
 
 ClassifierParameters.ELM_hiddenLayerSizes           = 500;
-ClassifierParameters.NUM_ELM_SIMULATIONS            = 0;
+ClassifierParameters.NUM_ELM_SIMULATIONS            = 50;
 
 ClassifierParameters.linRegularizationFactors       = 1e-16;
 ClassifierParameters.ELM_regularizationFactors      = 1e-6;
@@ -802,6 +805,8 @@ ClassifierParameters.SHOW_CLASSIFIER_OUTPUT_PLOT    = 0;
 
 [classificationResult] = doClassification(Xtrain,Ytrain,Xtest,Ytest,ClassifierParameters)
 
+figure(676723);
+confusionchart(classificationResult.linClassifierResultArray.confusionMatrix)
  %% Compute RMSE while increasing hidden neurons, ELM
  
  for i=1:200
