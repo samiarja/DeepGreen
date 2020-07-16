@@ -25,6 +25,10 @@ All the code for my master degree at ICNS -->
   - [Classification Results](#classification-results-1)
     - [Unsupervised FEAST](#unsupervised-feast)
     - [Supervised FEAST](#supervised-feast)
+      - [Feature Extraction](#feature-extraction)
+      - [Features](#features)
+      - [Threshold change](#threshold-change)
+      - [Final Results](#final-results)
 
 
 <a name="desc1"></a>
@@ -59,7 +63,7 @@ Class label 1 - Circles          |  Class label 0 - Everything else |
 # Flattened features and labels
 
 
-Labels across time          |  Flattened features |
+Labels         |  Flattened features |
 :-------------------------:|:-------------------------:|
 [<img src="img/labels.svg" width="1620"/>](img/labels.svg) | [<img src="img/features.png" width="1500"/>](img/features.png) |
 
@@ -171,7 +175,7 @@ Class label 1 - Circles          |  Class label 0 - Everything else |
 <a name="additional-figures"></a>
 ## Additional Figures
 
-Labels across time          |  Flattened features |
+Labels          |  Flattened features |
 :-------------------------:|:-------------------------:|
 [<img src="img/labelplot_case1.svg" width="1620"/>](img/labelplot_case1.svg) | [<img src="img/featureplot_case1.svg" width="1500"/>](img/featureplot_case1.svg) |
 
@@ -206,6 +210,32 @@ For supervised FEAST:
 <a name="superised-feast"></a>
 ### Supervised FEAST
 
+
+<a name="feature-extraction"></a>
+#### Feature Extraction
+
+In this experiment, for each ROI we check if it fall in class 1 or class 0, we only selected two neurons for each class for training.
+
+<p align="center">
+  <img width="1000" height="500" src="img/supervisedfeatureextraction.gif" width="500">
+</p>
+
+<a name="features"></a>
+#### Features
+
+Class 1          |  Class 0 |
+:-------------------------:|:-------------------------:|
+[<img src="img/X1_supervised_2neurons.svg" width="1620"/>](img/X1_supervised_2neurons.svg) | [<img src="img/X0_supervised_2neurons.svg" width="1500"/>](img/X0_supervised_2neurons.svg) |
+
+<a name="threshold-change"></a>
+#### Threshold change
+
+Class 1          |  Class 0 |
+:-------------------------:|:-------------------------:|
+[<img src="img/X1_supervised_2neurons_thres.svg" width="1620"/>](img/X1_supervised_2neurons_thres.svg) | [<img src="img/X0_supervised_2neurons_thres.svg" width="1500"/>](img/X0_supervised_2neurons_thres.svg) |
+
+<a name="final-results"></a>
+#### Final Results
 
 |              | Balanced | Imbalanced |
 |:------------:|:--------:|:----------:|

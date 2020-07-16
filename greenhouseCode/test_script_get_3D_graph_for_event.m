@@ -72,43 +72,54 @@ idx = 0;
 % xs = 200;
 % ys = 200;
 
-xs = 173;
-ys = 130/2;
+xs = 346;
+ys = 260;
+% 
+S = zeros(xs,ys); T = S; P = double(T);%-inf;
+S2 = zeros(xs,ys); T2 = S2; P2 = double(T2);%-inf;
+S3 = zeros(xs,ys); T3 = S3; P3 = double(T3);%-inf;
 
-S = int64(zeros(xs,ys)); T = S; P = double(T);%-inf;
-nevents = numel(TD.ts);
-tau = 1*1e5;
-displayFreq = 10e4; % in units of time
+tau = 1*1e4;
+displayFreq = 0.5e4; % in units of time
 nextTimeSample = TD.ts(1,1)+displayFreq;
+nTD = numel(TD.x);
 
-% colormap( gca , [0 0 0; 1 0 0; 0 1 0] )
-% colormap( flipud(gray(256)) )
+% colormap( gca , [0 0 0; 1 0 0; 0 1 0])
+% colormap( flipud(gray(256)))
 
-figure(5); clf;ss = imagesc(gca,S);colormap(gca , [0 0 0; 0 1 0; 1 1 1])
+figure(5); clf;ss = imagesc(gca,S);colormap(hot)
+% figure(6); clf;ss2 = imagesc(gca,S2);colormap(gca , [0 0 0; 0 1 0; 1 1 1])
+% figure(7); clf;ss3 = imagesc(gca,S3);colormap(gca , [0 0 0; 0 1 0; 1 1 1])
+
 % figure(6);
-for idx = 10000:611854
+for idx = 1:nTD
     x = TD.x(idx)+1;
     y = TD.y(idx)+1;
     t = TD.ts(idx);
     p = TD.p(idx);
-    l = TD.c(idx);
-    if l == 3 % (1 red, 2 blue, 3 green)
+    l = TD.colour(idx);
+    % (1 red, 2 blue, 3 green)
+    if l == 1
         T(x,y) = t;
         P(x,y)=p;
+        
+        
         if t > nextTimeSample
+            
             nextTimeSample = max(nextTimeSample + displayFreq,t);
             S = exp(double((T-t))/tau);
-%             S = S(1:2:end,1:2:end); % only for red 1
-%                                           S = S(2:2:end,2:2:end); % only for blue 2
-                                          S = S(2:2:end,1:2:end); % only for green 3
-            set(gcf,'position',[700,1200,xs*3,ys*3])
+            % S = S(1:2:end,1:2:end);% only for red 1 (green for matlab)
+            % S = S(2:2:end,2:2:end); % only for blue 2 (blue)
+            % S = S(2:2:end,1:2:end); % only for green 3 (red for matlab)
+            set(gcf,'position',[700,1200,xs*4,ys*4])
             set(ss,'CData',S)
             drawnow limitrate
             %             surf(S);
             view([90 -90])
-            title([num2str(idx) '/' num2str(nevents) '----' 'All Event'])
+            title([num2str(idx) '/' num2str(nTD) '----' 'All Event'])
         end
     end
+    
 end
 %%
 figure(464676);

@@ -2,7 +2,7 @@
 % close all;
 
 
-% TD = struct('x',single(events(:,1)),'y',single(events(:,2)),'p',single(events(:,3)),'ts',events(:,4));
+% TD = struct('x',single(TD(:,1)),'y',single(TD(:,2)),'p',single(TD(:,3)),'ts',TD(:,4));
 % TD.ts = TD.ts - TD.ts(1,1);
 % TD.ts = single(TD.ts);
 
@@ -16,6 +16,12 @@
 % end
 % load(fullfile(path,file));
 % load
+
+% TD = load_atis_data("~/sami/Dataset/raw/log_td.dat");
+% TD = struct('x',single(TD.x(:,2)),'y',single(TD.y(:,3)),'p',single(TD.p(:,4)),'ts',TD.ts(:,1));
+% TD = struct('x',single(TD(:,1)),'y',single(TD(:,2)),'p',TD(:,3),'ts',TD(:,4));
+
+
 TD.ts = TD.ts - TD.ts(1,1);
 
 % TD.ts = TD.ts/1e+6;
@@ -27,8 +33,8 @@ e = []; idx = 0;
 % ys = 180;
 
 %if Prophesee
-xs = 640;
-ys = 480;
+xs = 346;
+ys = 260;
 
 %if DAVIS
 % S = int64(zeros(xs,ys)); T = S; P = double(T);%-inf;
@@ -45,22 +51,22 @@ nextTimeSample = TD.ts(1,1)+displayFreq;
 % map = AdvancedColormap('kwk',150,[200 150 0]/200);
 fig = figure(2); clf;ss = imagesc(S);colormap(hot);
 
-writerObj = VideoWriter('~/sami/Dataset/avi/case1.avi');
+writerObj = VideoWriter('~/sami/Dataset/avi/test.avi');
 writerObj.FrameRate = 30;
 open(writerObj);
 
-for idx = 600000:nTD
+for idx = 1:nTD
     
     x = TD.x(idx)+1;
     y = TD.y(idx)+1;
     t = TD.ts(idx);
     p = TD.p(idx);
-    label = TD.c(idx);
+    label = TD.colour(idx);
     % T maps the time of the most recent event to spatial pixel location
-    if label == 1
+    if label == 3
         T(x,y) = t;
         % P maps the polarity of the most recent event to spatial pixel location
-        %     P(x,y) = p;
+        P(x,y) = p;
         if t > nextTimeSample
             nextTimeSample = max(nextTimeSample + displayFreq,t);
             %exponential decay index surface

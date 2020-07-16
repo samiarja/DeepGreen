@@ -1,9 +1,12 @@
 %% Label data
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If COLORDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If DAVIS or ATIS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TD = struct('x',single(TD.x(1:2500000)),'y',single(TD.y(1:2500000)),'p',single(TD.p(1:2500000)),'ts',TD.ts(1:2500000));
-% TD.ts = TD.ts - TD.ts(1,1);
-% TD.ts = single(TD.ts);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If ColourDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TD = struct('x',single(events(:,2)),'y',single(events(:,3)),'p',single(events(:,4)),'ts',events(:,1), 'colour',single(events(:,5)));
+TD.ts = TD.ts - TD.ts(1,1);
+TD.ts = single(TD.ts);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If COLORDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 run test_getUserInputForStarTds.m
@@ -178,9 +181,9 @@ ys = 480;
 % 
 %if Prophesee
 S = zeros(xs,ys); T = S; P = double(T);
-
+% 
 tau = 1*1e4; % increase or decrease your exponential decay
-displayFreq = 5e4; % For speed in units of time
+displayFreq = 3e4; % For speed in units of time
 nextTimeSample = TD.ts(1,1)+displayFreq;
 
 thresholdArray_all = [];
@@ -195,9 +198,9 @@ binc = 1:nNeuron;
 %learning rate
 eta = 0.001;
 % Adaptive Positive threshold
-thresholdRise = 0.001;
+thresholdRise = 0.0008;
 % Adaptive Negative threshold
-thresholdFall = 0.002;
+thresholdFall = 0.005;
 %A 15x15 matrix
 % S = zeros(xs,ys); T = S; P = double(T);%-inf;%Negative infinite
 
@@ -208,7 +211,7 @@ figure(4); clf;
 
 sqNeuron = ceil(sqrt(nNeuron));
 %weight, random numbersof 
-w = rand(D*D,nNeuron);
+% w = rand(D*D,nNeuron);
 %w = rand(xs*ys,nNeuron);
 for iNeuron = 1:nNeuron
     w(:,iNeuron)       = w(:,iNeuron)./norm(w(:,iNeuron));
@@ -220,10 +223,10 @@ end
 % xlim([-1 17])
 
 %Initialize low threshold
-threshArray = zeros(1,nNeuron)+0.001;
+% threshArray = zeros(1,nNeuron)+0.001;
 
 % %Initialize random threshold
-% threshArray = rand(1,nNeuron);
+threshArray = rand(1,nNeuron);
 % 
 % %Initialize gaussian distribution threshold
 % threshArray = y2;
@@ -254,7 +257,7 @@ for epoch = 1:4
         y = TD.y(idx)+1;
         t = TD.ts(idx);
         p = TD.p(idx);
-        %         c = TD.c(idx);
+%         c = TD.c(idx);
         T(x,y) = t;
         P(x,y) = p;
         
@@ -316,16 +319,25 @@ for epoch = 1:4
                     %                 colorbar
                 end
                 
-                S_F = exp((T_F-t)/tau/3);
+                S_F = exp(double((T_F-t))/tau/3);
                 %                 %Feature map
                 figure(5)
-                for iNeuron = 1:nNeuron
-                    subplot(sqNeuron,sqNeuron,iNeuron)
-                    imagesc(S_F(:,:,iNeuron)); colormap(hot);
+                for iNeuron2 = 1:nNeuron
+                    subplot(sqNeuron,sqNeuron,iNeuron2)
+                    imagesc(S_F(:,:,iNeuron2)); colormap(hot);
                     view([90 90])
                     set(gca,'visible','off')
                     set(findall(gca, 'type', 'text'), 'visible', 'on')
                 end
+                
+%                 [M, I] = max(countArray);
+%                 figure(6)
+%                 imagesc(S_F(:,:,I)); colormap(hot);
+%                 view([90 90])
+%                 set(gca,'visible','off')
+%                 set(findall(gca, 'type', 'text'), 'visible', 'on')
+                
+                
                 %resizing
                 %             DS_F = imresize(S_F,1/5);
                 %
@@ -587,7 +599,7 @@ for idx = 1:nEvents
                 ST_F = exp((T_FdSimple-t)/tau/2);
                 S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
                 
-                %             S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
+                % S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
                 
                 X_original(Valididx,:) = S_Fd_featureContext(:)'; % X matrix. to later be split into Xtrain and Xtest
                 
