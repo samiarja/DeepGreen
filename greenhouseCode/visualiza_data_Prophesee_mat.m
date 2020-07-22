@@ -51,7 +51,7 @@ nextTimeSample = TD.ts(1,1)+displayFreq;
 % map = AdvancedColormap('kwk',150,[200 150 0]/200);
 fig = figure(2); clf;ss = imagesc(S);colormap(hot);
 
-writerObj = VideoWriter('~/sami/Dataset/avi/test.avi');
+writerObj = VideoWriter('~/sami/Dataset/avi/newdata0.avi');
 writerObj.FrameRate = 30;
 open(writerObj);
 
@@ -61,9 +61,12 @@ for idx = 1:nTD
     y = TD.y(idx)+1;
     t = TD.ts(idx);
     p = TD.p(idx);
-    label = TD.colour(idx);
-    % T maps the time of the most recent event to spatial pixel location
-    if label == 3
+    colour = TD.colour(idx);
+    %     label = TD.c(idx);
+    
+    if x > 85 && x < 270 && y > 80 && y < 200 % only when coloured events are used
+        % T maps the time of the most recent event to spatial pixel location
+        %         if label == 0
         T(x,y) = t;
         % P maps the polarity of the most recent event to spatial pixel location
         P(x,y) = p;
@@ -84,6 +87,7 @@ for idx = 1:nTD
             writeVideo(writerObj, F);
         end
     end
+    %     end
 end
 close(writerObj);
 fprintf('Sucessfully generated the video\n')

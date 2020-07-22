@@ -29,6 +29,9 @@ All the code for my master degree at ICNS -->
       - [Features](#features)
       - [Threshold change](#threshold-change)
       - [Final Results](#final-results)
+- [RGB FEAST](#rgb-feast)
+  - [Input Data](#input-data-1)
+  - [Colour event in 3D](#colour-event-in-3d)
 
 
 <a name="desc1"></a>
@@ -95,6 +98,14 @@ Labels         |  Flattened features |
 <p align="center">
   <img width="1200" height="400" src="img/superfeast.png" width="500">
 </p>
+
+<!-- <a name="Confusion Matrix"></a>
+#### Final Results
+
+Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
+:-------------------------:|:-------------------------:|
+[<img src="img/cm_balanced.svg" width="1620"/>](img/.svg) | [<img src="img/cm_imbalanced.svg" width="1500"/>](img/cm_imbalanced.svg) | -->
+
 
 |              | Balanced | Imbalanced |
 |:------------:|:--------:|:----------:|
@@ -262,6 +273,51 @@ RMSE - Imbalanced          |  Accuracy - Imbalanced |
 Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
 :-------------------------:|:-------------------------:|
 [<img src="img/cm_balanced.svg" width="1620"/>](img/.svg) | [<img src="img/cm_imbalanced.svg" width="1500"/>](img/cm_imbalanced.svg) |
+
+
+<a name="rgb-feast"></a>
+# RGB FEAST
+
+<a name="input-data"></a>
+## Input Data
+
+Full resolution events (346x260), captured with ColourDAVIS346
+<p align="center">
+  <img width="1000" height="500" src="img/testcolourcircles.gif" width="500">
+</p>
+
+<a name="colour-event-in-3D"></a>
+## Colour event in 3D
+<p align="center">
+  <img width="1000" height="500" src="img/colour_events.svg" width="500">
+</p>
+
+
+Blue features          |  Threshold |
+:-------------------------:|:-------------------------:|
+[<img src="img/bluetemplate.svg" width="1620"/>](img/bluetemplate.svg) | [<img src="img/blue_thres.svg" width="1500"/>](img/blue_thres.svg) |
+
+
+Red features          |  Threshold |
+:-------------------------:|:-------------------------:|
+[<img src="img/redtemplate.svg" width="1620"/>](img/redtemplate.svg) | [<img src="img/red_thres.svg" width="1500"/>](img/red_thres.svg) |
+
+
+Green features          |  Threshold |
+:-------------------------:|:-------------------------:|
+[<img src="img/greentemplate.svg" width="1620"/>](img/greentemplate.svg) | [<img src="img/green_thres.svg" width="1500"/>](img/green_thres.svg) |
+
+<p align="center">
+  <img width="1000" height="500" src="img/blue.gif" width="500">
+</p>
+
+<p align="center">
+  <img width="1000" height="500" src="img/red.gif" width="500">
+</p>
+
+<p align="center">
+  <img width="1000" height="500" src="img/green.gif" width="500">
+</p>
 
 <!-- **Step 1:** Performance metric
 

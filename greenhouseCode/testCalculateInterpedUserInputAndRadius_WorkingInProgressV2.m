@@ -4,9 +4,9 @@
 TD = struct('x',single(TD.x(1:2500000)),'y',single(TD.y(1:2500000)),'p',single(TD.p(1:2500000)),'ts',TD.ts(1:2500000));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If ColourDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TD = struct('x',single(events(:,2)),'y',single(events(:,3)),'p',single(events(:,4)),'ts',events(:,1), 'colour',single(events(:,5)));
-TD.ts = TD.ts - TD.ts(1,1);
-TD.ts = single(TD.ts);
+% TD = struct('x',single(events(:,2)),'y',single(events(:,3)),'p',single(events(:,4)),'ts',events(:,1), 'colour',single(events(:,5)));
+% TD.ts = TD.ts - TD.ts(1,1);
+% TD.ts = single(TD.ts);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If COLORDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 run test_getUserInputForStarTds.m
@@ -54,12 +54,12 @@ TD.ts = TD.ts/TD.ts(end)*timeEnd;
 
 %%% interpolating  ---------------------------
 if ~exist('userInputCellArrayRadius','var')
-%     userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
+    userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
     userInputCellArrayRadiusInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArrayRadius);
     userInputCellArrayRadiusInterped = real(userInputCellArrayRadiusInterped);
     userInputCellArrayInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArray);
 else
-%     userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
+    userInputCellArrayRadius{1,1} = userInputCellArrayRadius{1,1} + 1i*userInputCellArrayRadius{1,1};
     userInputCellArrayRadiusInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArrayRadius);
     userInputCellArrayRadiusInterped = real(userInputCellArrayRadiusInterped);
     userInputCellArrayInterped = calculateMeanInterpedUserInputFromUserInputCellArray(userInputCellArray);
@@ -211,7 +211,7 @@ figure(4); clf;
 
 sqNeuron = ceil(sqrt(nNeuron));
 %weight, random numbersof 
-% w = rand(D*D,nNeuron);
+w = rand(D*D,nNeuron);
 %w = rand(xs*ys,nNeuron);
 for iNeuron = 1:nNeuron
     w(:,iNeuron)       = w(:,iNeuron)./norm(w(:,iNeuron));
@@ -771,8 +771,8 @@ Ytest(:,2) = ~(Ytest(:,1));
 % Xtrain(isinf(Xtrain))=1;
 % Xtest(isinf(Xtest))=1;
 
-figure(312311);
-imagesc(X0); colorbar
+% figure(312311);
+% imagesc(X0); colorbar
 % 
 % figure(312312);
 % plot(movmean(Y(:,1),100)); colorbar
@@ -793,7 +793,7 @@ toc;
 %% Classification linear/ELM
 
 ClassifierParameters.ELM_hiddenLayerSizes           = 500;
-ClassifierParameters.NUM_ELM_SIMULATIONS            = 50;
+ClassifierParameters.NUM_ELM_SIMULATIONS            = 0;
 
 ClassifierParameters.linRegularizationFactors       = 1e-16;
 ClassifierParameters.ELM_regularizationFactors      = 1e-6;
