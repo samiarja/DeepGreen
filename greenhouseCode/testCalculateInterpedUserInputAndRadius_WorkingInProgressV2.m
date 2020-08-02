@@ -1,7 +1,7 @@
-%% Label data
+%% Labelling data
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If DAVIS or ATIS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TD = struct('x',single(TD.x(1:2500000)),'y',single(TD.y(1:2500000)),'p',single(TD.p(1:2500000)),'ts',TD.ts(1:2500000));
+% TD = struct('x',single(TD.x(1:2500000)),'y',single(TD.y(1:2500000)),'p',single(TD.p(1:2500000)),'ts',TD.ts(1:2500000));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If ColourDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TD = struct('x',single(events(:,2)),'y',single(events(:,3)),'p',single(events(:,4)),'ts',events(:,1), 'colour',single(events(:,5)));
@@ -10,7 +10,7 @@ TD = struct('x',single(TD.x(1:2500000)),'y',single(TD.y(1:2500000)),'p',single(T
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%If COLORDAVIS346%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 run test_getUserInputForStarTds.m
-%% plot ground truth label (spatial coordinate and size) interpolation
+%% Apply linear interpolation on the ground truth datapoint (assigning a label for each events) 
 %%% making fake user data ---------------------------
 
 if ~isempty(userInputCellArray)
@@ -162,9 +162,14 @@ scatter3(TD.x(find_all_ground_truth,1),TD.y(find_all_ground_truth,1),TD.ts(find_
 % labelOccurencesHistorgam2 = hist(TD.c,countLabel2);
 % resultcountLabel2 = [countLabel2; labelOccurencesHistorgam2]
 
-
-
-%% FEAST Algorithm, Unsupervised feature extraction
+% Remove the first 900k events
+TD.x(1:900000) = [];
+TD.y(1:900000) = [];
+TD.p(1:900000) = [];
+TD.ts(1:900000) = [];
+TD.c(1:900000) = [];
+TD.n(1:900000) = [];
+%% Training FEAST Algorithm
 idx = 0;
 nTD = numel(TD.x);
 
@@ -193,10 +198,10 @@ thresholdArray_all = [];
 R = 7;
 D = 2*R + 1; % D = 21
 %number of neurons
-nNeuron = 9;
+nNeuron = 16;
 binc = 1:nNeuron;
 %learning rate
-eta = 0.001;
+eta = 0.0005;
 % Adaptive Positive threshold
 thresholdRise = 0.0008;
 % Adaptive Negative threshold
@@ -302,7 +307,8 @@ for epoch = 1:4
                 
                 nextTimeSample = max(nextTimeSample + displayFreq,t);
                 
-                figure(4)
+                f4 = figure(4);
+                f4.Name = 'Feature Extraction (Tranining)';
                 for iNeuron = 1:nNeuron
                     subplot(sqNeuron,sqNeuron,iNeuron)
                     %subplot(1,nNeuron,iNeuron)
@@ -321,11 +327,13 @@ for epoch = 1:4
                 
                 S_F = exp(double((T_F-t))/tau/3);
                 %                 %Feature map
-                figure(5)
+                f5 = figure(5);
+                f5.Name = 'Feature Map Training';
                 for iNeuron2 = 1:nNeuron
                     subplot(sqNeuron,sqNeuron,iNeuron2)
                     imagesc(S_F(:,:,iNeuron2)); colormap(hot);
                     view([90 90])
+                    title("Neuron" + iNeuron2)
                     set(gca,'visible','off')
                     set(findall(gca, 'type', 'text'), 'visible', 'on')
                 end
@@ -418,10 +426,10 @@ end
 % end
 
 
-%% Neuron testing aka inference && create X and Y vectors
+%% Parameter initialization to get X and Y matrix
 tic;
 X_original = eye(nEvents,9*nNeuron);
-% coordinate = zeros(nEvents, 3);
+coordinate = zeros(nEvents, 4);
 wFrozen = w;
 downSampleFactor = 10;
 
@@ -436,7 +444,7 @@ labels = TD.x+NaN;
 
 % figure(432432);
 % pp = plot(winnerNeuronArray); grid on;
-
+% S = zeros(xs,ys); T = S; P = double(T);
 % T = T -inf;
 % T_F(:,:,nNeuron) = T;
 % T_F = T_F-inf;
@@ -455,9 +463,11 @@ nextTimeSample = TD.ts(1,1)+displayFreq;
 % D = 2*Radius + 1;
 % nextTimeSample = TD.ts(1,1)+displayFreq;
 toc;
-%% Flatten features
+%% Flatten features/ Create X and Y matrix which will be used in the classification
 tic;
 Valididx = 0;
+validnewTD0 = 0;validnewTD1 = 0;
+newTD0 = [];newTD1 = [];
 
 for idx = 1:nEvents
     x = TD.x(idx);
@@ -496,7 +506,7 @@ for idx = 1:nEvents
             
             T_FdSimple(xd,yd,winnerNeuron) = t;
             P_FdSimple(xd,yd,winnerNeuron) = p;
-            
+          
             if isinf(T_FdSimple(xd,yd,winnerNeuron))
                 T_FdSimple(xd,yd,winnerNeuron) = t;
                 T_FdSimple(xd,yd,winnerNeuron) = p;
@@ -511,15 +521,25 @@ for idx = 1:nEvents
             P_Fd_featureContext = P_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
             
             S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
-            %             S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
-            
             X_original(Valididx,:) = S_Fd_featureContext(:)'; % X matrix. to later be split into Xtrain and Xtest
-          
-            %             coordinate(Valididx,1)=xd;coordinate(Valididx,2)=yd;coordinate(Valididx,3)=winnerNeuron;
-            if TD.c(Valididx) == 0 % Non-fruit label
+            coordinate(Valididx,1)=x;coordinate(Valididx,2)=y;coordinate(Valididx,3)=t;
+            %             coordinate(Valididx+1,1)=x+1;coordinate(Valididx+1,2)=y+1;coordinate(Valididx+1,3)=t;
+            
+            if TD.c(idx) == 0 % Non-fruit label
+                coordinate(Valididx,4) = 0;
+                validnewTD0 = validnewTD0 + 1;
                 labels(Valididx,1) = 0;  %Y vector to later be split into Ytrain and Ytest
-            elseif  TD.c(Valididx) == 1 % Fruit label
+                %                 newTD0.x(validnewTD0) = x;
+                %                 newTD0.y(validnewTD0) = y;
+                %                 newTD0.ts(validnewTD0) = t;
+                
+            elseif  TD.c(idx) == 1 % Fruit label
+                coordinate(Valididx,4) = 1;
+                validnewTD1 = validnewTD1 + 1;
                 labels(Valididx,1) = 1;
+                %                 newTD1.x(validnewTD1) = x;
+                %                 newTD1.y(validnewTD1) = y;
+                %                 newTD1.ts(validnewTD1) = t;
             end
         end
     end
@@ -537,117 +557,6 @@ toc;
 
 % X = single(X_original);Youtput
 % Y = single(labels);
-%% Visualize features for class 1 and 0
-
-tic;
-Valididx = 0;
-
-for idx = 1:nEvents
-    x = TD.x(idx);
-    y = TD.y(idx);
-    xd = round(x/downSampleFactor);
-    yd = round(y/downSampleFactor);
-    p = TD.p(idx);
-    t =  TD.ts(idx);
-    c = TD.c(idx);
-    T(x,y) = t;
-    P(x,y) = p;
-    
-    if c == 1
-        
-        if (x-Radius>0) && (x+Radius<xs) && (y-Radius>0) && (y+Radius<ys)
-            
-            ROI = P(x-Radius:x+Radius,y-Radius:y+Radius).*exp(double((T(x-Radius:x+Radius,y-Radius:y+Radius)-t))/tau);
-            
-            if x>2 && y>2 &&xd<xs && yd<ys  % figure out how to find xydMax
-                ROI_norm             = ROI/norm(ROI);
-                ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
-                dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
-                [C,winnerNeuron ]       = max(dotProds);
-                
-                Valididx = Valididx + 1;
-                winnerNeuronArray(Valididx) = winnerNeuron;
-                
-                %         if TD.c(idx) == 1
-                %             count0 = count0 + 1;
-                %             countNeuron(1,winnerNeuron) = count0;
-                %         else
-                %             count1 = count1 + 1;
-                %             countNeuron(2,winnerNeuron) = count1;
-                %         end
-                %
-                
-                T_F(x,y,winnerNeuron) = t;
-                P_F(x,y,winnerNeuron) = p;
-                
-                T_FdSimple(xd,yd,winnerNeuron) = t;
-                P_FdSimple(xd,yd,winnerNeuron) = p;
-                
-                if isinf(T_FdSimple(xd,yd,winnerNeuron))
-                    T_FdSimple(xd,yd,winnerNeuron) = t;
-                    T_FdSimple(xd,yd,winnerNeuron) = p;
-                else
-                    T_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*T_FdSimple(xd,yd,winnerNeuron) + beta*t;
-                    P_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*P_FdSimple(xd,yd,winnerNeuron) + beta*p;
-                end
-                
-                % at each event (regardless of label) populate X with the
-                % neighbouring 8 pixels from the downsampled feature map
-                T_Fd_featureContext = T_F((x-1):(x+1),(y-1):(y+1),:);
-                P_Fd_featureContext = P_F((x-1):(x+1),(y-1):(y+1),:);
-                
-                ST_F = exp((T_FdSimple-t)/tau/2);
-                S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
-                
-                % S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
-                
-                X_original(Valididx,:) = S_Fd_featureContext(:)'; % X matrix. to later be split into Xtrain and Xtest
-                
-                figure(45746)
-                for iNeuron = 1:nNeuron
-                    subplot(sqNeuron,sqNeuron,iNeuron)
-                    imagesc(S_Fd_featureContext(:,:,iNeuron)); colormap(hot);
-                    view([90 90])
-                    set(gca,'visible','off')
-                    set(findall(gca, 'type', 'text'), 'visible', 'on')
-                    %                     colorbar
-                end
-                
-                if t > nextTimeSample
-                    idx
-                    winnerNeuron
-                    
-                    nextTimeSample = max(nextTimeSample + displayFreq,t);
-                    
-                    S_F = exp((T_F-t)/tau/3);
-                    figure(8)
-                    for iNeuron = 1:nNeuron
-                        subplot(sqNeuron,sqNeuron,iNeuron)
-                        imagesc(S_F(:,:,iNeuron)); colormap(hot);
-                        view([90 90]);
-                        set(gca,'visible','off');
-                        set(findall(gca, 'type', 'text'), 'visible', 'on');
-                        
-                    end
-                    
-                    eta = eta * 0.999;
-                    drawnow
-                end
-                
-                
-                
-                %             %             coordinate(Valididx,1)=xd;coordinate(Valididx,2)=yd;coordinate(Valididx,3)=winnerNeuron;
-                %             if TD.c(Valididx) == 0 % Non-fruit label
-                %                 labels(Valididx,1) = 0;  %Y vector to later be split into Ytrain and Ytest
-                %             elseif  TD.c(Valididx) == 1 % Fruit label
-                %                 labels(Valididx,1) = 1;
-                %             end
-            end
-        end
-    end
-end
-toc;
-
 %% Events skipping and data cleaning
 tic;
 % nEventsToSkip = 1;
@@ -657,27 +566,36 @@ tic;
 X = single(X_original);
 Y = single(labels);
 
-% xCoordArray = TD.x(1:nEventsToSkip:end,:);
-% yCoordArray = TD.y(1:nEventsToSkip:end,:);
-% tsCoordArray = TD.ts(1:nEventsToSkip:end,:);
+xCoordArray = coordinate(:,1);
+yCoordArray = coordinate(:,2);
+tsCoordArray = coordinate(:,3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%Only for this dataset "LATEST_fruit10_10mData_labelsOnly_25Labels_with_FEAST_VariablesOnly_USETHIS"%%%%%%%%%%%%%%%%%%%%%%%%
 findNaN = find(isnan(Y));
-% xCoordArray = xCoordArray(1:findNaN(1),:);
+
 X = X(1:findNaN(1)-1,:);
 Y = Y(1:findNaN(1)-1,1);
+
+xCoordArray = xCoordArray(1:findNaN(1)-1,:);
+yCoordArray = yCoordArray(1:findNaN(1)-1,:);
+tsCoordArray = tsCoordArray(1:findNaN(1)-1,:);
+
+
+
+% xCoordArray = xCoordArray(1:findNaN(1),1);
+% yCoordArray = yCoordArray(1:findNaN(1),1);
+% tsCoordArray = tsCoordArray(1:findNaN(1),1);
 
 % findZeros = find(Y > 0);
 % X = X(findZeros(1):findZeros(end),:);
 % Y = Y(findZeros(1):findZeros(end),1);
+
 figure(678678);imagesc(X);
 figure(678679);plot(Y);
 xlabel("Event Index");
 ylabel("Label");
 
-% xCoordArray = xCoordArray(1:findNaN(1),:);20
-% yCoordArray = yCoordArray(1:findNaN(1),1);
-% tsCoordArray = tsCoordArray(1:findNaN(1),1);
+
 
 % Ytrain(11866,1)=0;
 % Ytest(11480,1)=0;
@@ -743,9 +661,9 @@ shuffledIndex = randperm(nEventAfterSkip);
 X_shuffled = X(shuffledIndex,:);
 Y_shuffled = Y(shuffledIndex,:);
 
-% xCoordArray = xCoordArray(shuffledIndex,:);
-% yCoordArray = yCoordArray(shuffledIndex,:);
-% tsCoordArray = tsCoordArray(shuffledIndex,:);
+xCoordArray_shuffle = xCoordArray(shuffledIndex,:);
+yCoordArray_shuffle = yCoordArray(shuffledIndex,:);
+tsCoordArray_shuffle = tsCoordArray(shuffledIndex,:);
 
 % coordinate_shuffle = coordinate(randperm(nEventAfterSkip),:);
 
@@ -757,9 +675,9 @@ Xtest = X_shuffled((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
 Ytrain = Y_shuffled(1:floor(nEventAfterSkip*trainTestSplitRatio),:);
 Ytest = Y_shuffled((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
 
-% xCoordArray = xCoordArray((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
-% yCoordArray = yCoordArray((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
-% tsCoordArray = tsCoordArray((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
+xCoordArraytest = xCoordArray_shuffle((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
+yCoordArraytest = yCoordArray_shuffle((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
+tsCoordArraytest = tsCoordArray_shuffle((floor(nEventAfterSkip*trainTestSplitRatio)+1):end,:);
 
 % coordinate_test = coordinate_shuffle(1:floor(nEventAfterSkip*trainTestSplitRatio),:);
 % 
@@ -790,7 +708,7 @@ nEventWithNoise = 5;
 Xtrain(1:nEventWithNoise:end,:)=0;
 Xtest(1:nEventWithNoise:end,:)=0;
 toc;
-%% Classification linear/ELM
+%% Classification linear/ELM network
 
 ClassifierParameters.ELM_hiddenLayerSizes           = 500;
 ClassifierParameters.NUM_ELM_SIMULATIONS            = 0;
@@ -804,9 +722,26 @@ ClassifierParameters.SHOW_ELM_STD_PLOTS             = 0;
 ClassifierParameters.SHOW_CLASSIFIER_OUTPUT_PLOT    = 0;
 
 [classificationResult] = doClassification(Xtrain,Ytrain,Xtest,Ytest,ClassifierParameters)
+ 
+matrix = classificationResult.linClassifierResultArray.confusionMatrix;
+NormRows = sqrt(sum(matrix.*matrix,2));
+Ynorm = bsxfun(@rdivide,abs(matrix),NormRows)
 
 figure(676723);
 confusionchart(classificationResult.linClassifierResultArray.confusionMatrix)
+
+figure(567567);
+subplot(2,1,1)
+bar(classificationResult.linClassifierResultArray.linearInputToOutputMapping(1,:))
+xlabel("Weight per activation");
+ylabel("Weight Amplidute");
+title("Weight for each activation");
+subplot(2,1,2)
+imagesc(X)
+xlabel("Number of neurons x Receptive field");
+ylabel("Activation through time");
+title("Flattened features (16 Neurons with 3x3 receptive field)");
+
  %% Compute RMSE while increasing hidden neurons, ELM
  
  for i=1:200
@@ -841,77 +776,96 @@ confusionchart(classificationResult.linClassifierResultArray.confusionMatrix)
 %      title(append("Epoch: " + num2str(i) + " " + "Sigmoid"))
 %      darkBackground(fig2,[0 0 0],[1 1 1])
  end
- 
- %% Class activation map / Heat map for FEAST feature
+ %% Visualize classification output using Y_hat (predicted label on the test set)
 tic;
-labelTd = [];
-indexCoord = numel(xCoordArray);EventIndex=0;
+% Sort the timestamp in an ascending order and get the sort index
+[tsCoordArraytestArray,sortIdx] = sort(tsCoordArraytest,'ascend');
+xCoordArraytestFinal = xCoordArraytest(sortIdx); % Sort the x coordinate the same way using the sort index
+yCoordArraytestFinal = yCoordArraytest(sortIdx);% Sort the y coordinate the same way using the sort index
+YtestOutputMaxedFinal = YtestMaxed(sortIdx,1);% Sort the Predicted label (Y) the same way using the sort index
+YtestFinal = Ytest(sortIdx,1);% Sort the ground truth label (Y) the same way using the sort index
 
-for element = 1:indexCoord
-    xcoord = xCoordArray(element);
-    ycoord = yCoordArray(element);
-    tscoord = tsCoordArray(element);
-    
-    if Ytest(element,1) > Ytest(element,2)
-        EventIndex = EventIndex +1
-        labelTd.x(element) = xcoord;
-        labelTd.y(element) = ycoord;
-        labelTd.p(element) = 1;
-        labelTd.ts(element) = tscoord;
-    else
-        labelTd.x(element) = xcoord;
-        labelTd.y(element) = ycoord;
-        labelTd.p(element) = -1;
-        labelTd.ts(element) = tscoord;
-    end
-end
+% Put all the arrays on one matrix (Struct)
+newArray = struct('x',single(xCoordArraytestFinal),'y',single(yCoordArraytestFinal), 'ts',tsCoordArraytestArray, 'yPred',single(YtestOutputMaxedFinal), 'yTest',single(YtestFinal));
 toc;
- %% Class activation map / Heat map for FEAST feature
-% tic;
-% % timeEnd = surfaceSamplingTimeArray(end);
-% % nEvents = numel(TD.ts);
-% % timeNow = 0;
-% validID = 0;
-% iFrame = 1; NEWTd = []; EventIndex = 0;
-% TD.ts = TD.ts/TD.ts(end)*timeEnd;
-% 
-% coordinate_testX = NaN;coordinate_testY = NaN;
-% 
-% for idx = 1:nEvents
-%     x = round(TD.x(idx)/20)+1;
-%     y = round(TD.y(idx)/20)+1;
-%     t =  TD.ts(idx);
-%     
-%     while t>surfaceSamplingTimeArray(min(iFrame+1,nFrame)) && iFrame < nFrame
-%         iFrame = iFrame + 1;
-%         coordinate_testX = coordinate_test(iFrame,1);
-%         coordinate_testY = coordinate_test(iFrame,2);
-%         [coordinate_testX; coordinate_testY;]
-%     end
-%     % ((x - objx(iObj))^2 + (y - objy(iObj))^2)
-%     if ((x - coordinate_testX)^2 + (y - coordinate_testY)^2) < ((coordinate_testX - (coordinate_testX + 1))^2 + (coordinate_testY - (coordinate_testY+1))^2) % when label is fruit
-%         validID = validID + 1;
-%         if Ytest(validID,1)==1
-%             EventIndex = EventIndex +1;
-%             NEWTd.x(EventIndex) = x;
-%             NEWTd.y(EventIndex) = y;
-%             NEWTd.ts(EventIndex) = t;
-%             NEWTd.p(EventIndex) = 1;
-%         end
-%     end
-% end
-% toc;
+%% Visualize the video for each class and save an avi copy in the path
 
+e = []; idx = 0;
 
+% % if DAVIS
+% xs = 240;
+% ys = 180;
 
+%if Prophesee
+xs = 640;
+ys = 480;
 
+%if DAVIS
+% S = int64(zeros(xs,ys)); T = S; P = double(T);%-inf;
 
+%if Prophesee
+S = zeros(xs,ys); T = S; P = double(T);
 
+% ON and OFF eventinput
+nTD = numel(TD.x);
+seconds = TD.ts/1e6;
+tau = 4*1e4;
+displayFreq = 0.5e4; % in units of time
+nextTimeSample = TD.ts(1,1)+displayFreq;
+% map = AdvancedColormap('kwk',150,[200 150 0]/200);
+fig = figure(2); clf;ss = imagesc(S);colormap(hot);
 
+% Name of the video file
+writerObj = VideoWriter('~/sami/Dataset/avi/c0groundtruth.avi');
+writerObj.FrameRate = 30;
+open(writerObj);
 
-
-
-
-
-
-
+% Loop through the events and make a time surface for each class
+for idx = 60000:nTD
+    x = TD.x(idx)+1;
+    y = TD.y(idx)+1;
+    t = TD.ts(idx);
+    %         label = TD.c(idx);
+    %     p = TD.p(idx);
+    %     colour = TD.colour(idx);
+    label = TD.yPred(idx);
+    %     if colour == 4
+    %         if p == 1
+    %     if x > 85 && x < 270 && y > 80 && y < 200 % only when coloured events are used
+    % T maps the time of the most recent event to spatial pixel location
+    if label == 0
+        T(x,y) = t;
+        % P maps the polarity of the most recent event to spatial pixel location
+        %         P(x,y) = p;
+        if t > nextTimeSample
+            nextTimeSample = max(nextTimeSample + displayFreq,t);
+            S = exp(double((T-t))/tau);
+            set(ss,'CData',S)
+            drawnow limitrate
+            xlabel("X-axis")
+            ylabel("Y-axis")
+            view([90 90])
+            colorbar
+            
+            title(['\fontsize{14} Ground Truth Class 0 (Lines) ', ...
+                '\newline \fontsize{10} \color{red} \it Tau = 4*1e4, DispFreq = 0.5e4', ...
+                '\newline \fontsize{10} \color{red} Timestamp:',num2str(t/1e6)]);
+            
+            %             title(['\fontsize{14} ELM Class 1 (Circles) ', ...
+            %         '\newline \fontsize{10} \color{red} \it Acc. 93.9%, Tau = 4*1e4, DispFreq = 0.5e4', ...
+            %         '\newline \fontsize{10} \color{red} Timestamp:',num2str(t/1e6)]);
+            
+            %             title([num2str(t/1e6), 'Class 1'])
+            %             title(['Time is ',num2str(t/1e6),' s', 'Class 1'; 'Accuracy'; '90%'])
+            %             set(gca,'visible','off')
+            set(findall(gca, 'type', 'text'), 'visible', 'on')
+            %             darkBackground(fig,[0 0 0],[0 0 0])
+            F = getframe(gcf) ;
+            writeVideo(writerObj, F);
+        end
+        %             end
+    end
+    %     end
+end
+close(writerObj);
+fprintf('Sucessfully generated the video\n')

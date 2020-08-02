@@ -33,7 +33,7 @@ end
 numLabels = size(YtestGroundTruth,2);
 
 linearInputToOutputMapping = (Xtrain'*Ytrain)'/(Xtrain'*Xtrain + regularizationFactor*eye(inputChannels,inputChannels)); %Wo = (X'*Y)'/(X'*X+1e-6*eye(size_xall(2),size_xall(2)));
-
+% YtestOutputTrain=Xtrain*linearInputToOutputMapping'; 
 YtestOutput=Xtest*linearInputToOutputMapping';
 
 % Softmax function

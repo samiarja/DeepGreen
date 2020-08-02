@@ -189,42 +189,42 @@ green2polarityone = find(green2events.x > 85 & green2events.x < 270 & green2even
 
 figure(7878);
 subplot(4,2,1)
-scatter3(bluevents.x(bluepolarityzero,1),bluevents.y(bluepolarityzero,1),bluevents.ts(bluepolarityzero,1),'b');
+scatter3(bluevents.x(bluepolarityzero,1),bluevents.y(bluepolarityzero,1),bluevents.ts(bluepolarityzero,1),'.b');
 title("Polarity OFF")
 grid off
 
 subplot(4,2,2)
-scatter3(bluevents.x(bluepolarityone,1),bluevents.y(bluepolarityone,1),bluevents.ts(bluepolarityone,1),'b');
+scatter3(bluevents.x(bluepolarityone,1),bluevents.y(bluepolarityone,1),bluevents.ts(bluepolarityone,1),'.b');
 title("Polarity ON")
 grid off
 
 subplot(4,2,3)
-scatter3(redevents.x(redpolarityzero,1),redevents.y(redpolarityzero,1),redevents.ts(redpolarityzero,1),'r');
+scatter3(redevents.x(redpolarityzero,1),redevents.y(redpolarityzero,1),redevents.ts(redpolarityzero,1),'.r');
 title("Polarity OFF")
 grid off
 
 subplot(4,2,4)
-scatter3(redevents.x(redpolarityone,1),redevents.y(redpolarityone,1),redevents.ts(redpolarityone,1),'r');
+scatter3(redevents.x(redpolarityone,1),redevents.y(redpolarityone,1),redevents.ts(redpolarityone,1),'.r');
 title("Polarity ON")
 grid off
 
 subplot(4,2,5)
-scatter3(green1events.x(green1polarityzero,1),green1events.y(green1polarityzero,1),green1events.ts(green1polarityzero,1),'g');
+scatter3(green1events.x(green1polarityzero,1),green1events.y(green1polarityzero,1),green1events.ts(green1polarityzero,1),'.g');
 title("Polarity OFF")
 grid off
 
 subplot(4,2,6)
-scatter3(green1events.x(green1polarityone,1),green1events.y(green1polarityone,1),green1events.ts(green1polarityone,1),'g');
+scatter3(green1events.x(green1polarityone,1),green1events.y(green1polarityone,1),green1events.ts(green1polarityone,1),'.g');
 title("Polarity ON")
 grid off
 
 subplot(4,2,7)
-scatter3(green2events.x(green2polarityzero,1),green2events.y(green2polarityzero,1),green2events.ts(green2polarityzero,1),'g');
+scatter3(green2events.x(green2polarityzero,1),green2events.y(green2polarityzero,1),green2events.ts(green2polarityzero,1),'.g');
 title("Polarity OFF")
 grid off
 
 subplot(4,2,8)
-scatter3(green2events.x(green2polarityone,1),green2events.y(green2polarityone,1),green2events.ts(green2polarityone,1),'g');
+scatter3(green2events.x(green2polarityone,1),green2events.y(green2polarityone,1),green2events.ts(green2polarityone,1),'.g');
 title("Polarity ON")
 grid off
 %% RGB FEAST
@@ -416,15 +416,15 @@ ylabel("Threshold value")
 title("Blue events")
 
 %% Inference
-
-wFrozen = wgreen;
+S = zeros(xs,ys); T = S; P = double(T);
+wFrozen = wred;
 % downSampleFactor = 10;
 % figure(432432);
 % pp = plot(winnerNeuronArray); grid on;
-% T = T -inf;
-% T_F(:,:,nNeuron) = T;
-% T_F = T_F-inf;
-% P_F = zeros(size(T_F));
+T = T -inf;
+T_F(:,:,nNeuron) = T;
+T_F = T_F-inf;
+P_F = zeros(size(T_F));
 tau = 1*1e4;
 % countNeuron = nan(2,nNeuron);count0 = 0;count1 = 0;
 displayFreq = 3e4; % For speed in units of time
@@ -478,16 +478,25 @@ for idx = 1:nTD
                     nextTimeSample = max(nextTimeSample + displayFreq,t);
                     
                     S_F = exp((T_F-t)/tau/3);
+                    
                     figure(8)
                     for iNeuron = 1:nNeuron
                         subplot(sqNeuron,sqNeuron,iNeuron)
                         imagesc(S_F(:,:,iNeuron));
-                        colormap(gca , [0 0 0; 0 1 0; 1 1 1]);
+                        colormap(gca , [0 0 0; 1 0 0; 1 1 1]);
                         view([90 90]);
+                        S_F_count_column = sum(S_F(:,:,iNeuron));
+                        S_F_count_row = sum(S_F(:,:,iNeuron)')';
+                        S_F_count_columnsum = sum(S_F_count_column);
+                        S_F_count_rowsum = sum(S_F_count_row);
+                        Activation = S_F_count_columnsum + S_F_count_rowsum;
+                        title(num2str(Activation,2));
                         set(gca,'visible','off');
                         set(findall(gca, 'type', 'text'), 'visible', 'on');
                         
                     end
+                    
+                   
                     
                     eta = eta * 0.999;
                     drawnow

@@ -253,6 +253,9 @@ Class 1          |  Class 0 |
 <a name="final-results"></a>
 #### Final Results
 
+Using only 2 neurons
+ 
+
 |              | Balanced | Imbalanced |
 |:------------:|:--------:|:----------:|
 |  Sensitivity |     0.7441     |      0.8791     |
@@ -262,17 +265,71 @@ Class 1          |  Class 0 |
 |  Linear Classifier Accuracy (%)  |     80.9937 &plusmn; 0.0   |       79.1488 &plusmn; 0.0   |
 |   ELM Accuracy (%)               |       83.36 &plusmn; 0.057     |      82.89 &plusmn;  0.0365      |
 
-RMSE - Balanced          |  Accuracy - Balanced |
+Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
 :-------------------------:|:-------------------------:|
-[<img src="img/rmse_50iter.svg" width="1620"/>](img/rmse_50iter.svg) | [<img src="img/acc_50iter.svg" width="1500"/>](img/acc_50iter.svg) |
+[<img src="img/cm_balanced.svg" width="2000"/>](img/.svg) | [<img src="img/cm_imbalanced.svg" width="2000"/>](img/cm_imbalanced.svg) |
 
-RMSE - Imbalanced          |  Accuracy - Imbalanced |
-:-------------------------:|:-------------------------:|
-[<img src="img/rmse_50iter_imb.svg" width="1620"/>](img/rmse_50iter_imb.svg) | [<img src="img/acc_50iter_imb.svg" width="1500"/>](img/acc_50iter_imb.svg) |
+<p align="center">
+  <img width="1000" height="500" src="img/../greenhouseCode/recordings/case%201/2neuronsweight.svg" width="500">
+</p>
+
+Using 4 neurons
+
+|              | Balanced | Imbalanced |
+|:------------:|:--------:|:----------:|
+|  Sensitivity |    0.8008      |      0.9115     |
+|  Specificity |    0.9235      |      0.7218     |
+| Informedness |    0.7243      |      0.6333     |
+|     RMSE     |    0.3199    |      0.3114     |
+|  Linear Classifier Accuracy (%)  |    83.83    |     82.51     |
+|   ELM Accuracy (%)               |    86.20    |      86.41     |
 
 Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
 :-------------------------:|:-------------------------:|
-[<img src="img/cm_balanced.svg" width="1620"/>](img/.svg) | [<img src="img/cm_imbalanced.svg" width="1500"/>](img/cm_imbalanced.svg) |
+[<img src="img/../greenhouseCode/recordings/case%201/4neurons_confusionmatrixbalanced.svg" width="2000"/>](img/img/../greenhouseCode/recordings/case%201/9neurons_confusionmatrix.svg) | [<img src="img/../greenhouseCode/recordings/case%201/4neurons_confusionmatriximbalanced.svg" width="2000"/>](img/cm_imbalanced.svg) |
+
+<p align="center">
+  <img width="1000" height="500" src="img/../greenhouseCode/recordings/case%201/4neuronsweight.svg" width="500">
+</p>
+
+Using 9 neurons
+
+|              | Balanced | Imbalanced |
+|:------------:|:--------:|:----------:|
+|  Sensitivity |    0.8198      |      0.9119     |
+|  Specificity |    0.9211     |      0.7505     |
+| Informedness |    0.7409      |      0.6624     |
+|     RMSE     |    0.3234      |      0.3121     |
+|  Linear Classifier Accuracy (%)  |    85.44    |     85.10     |
+|   ELM Accuracy (%)               |     87.03   |      87.15    |
+
+Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
+:-------------------------:|:-------------------------:|
+[<img src="img/../greenhouseCode/recordings/case%201/9neurons_confusionmatrixbalanced.svg" width="2000"/>](img/img/../greenhouseCode/recordings/case%201/9neurons_confusionmatrix.svg) | [<img src="img/../greenhouseCode/recordings/case%201/9neurons_confusionmatrix.svg" width="2000"/>](img/cm_imbalanced.svg) |
+
+<p align="center">
+  <img width="1000" height="500" src="img/../greenhouseCode/recordings/case%201/9neuronsweight.svg" width="500">
+</p>
+
+
+Using 16 neurons
+
+|              | Balanced | Imbalanced |
+|:------------:|:--------:|:----------:|
+|  Sensitivity |    0.7929      |      0.9079    |
+|  Specificity |    0.9279     |      0.7407     |
+| Informedness |    0.7208      |      0.6487     |
+|     RMSE     |    0.3291      |      0.3208     |
+|  Linear Classifier Accuracy (%)  |    86.0359    |     85.5096     |
+|   ELM Accuracy (%)               |     86.0359   |      86.6038    |
+
+Confusion Matrix - Balanced          |  Confusion Matrix - Imbalanced |
+:-------------------------:|:-------------------------:|
+[<img src="img/../greenhouseCode/recordings/case%201/16neurons_confusionmatrixbalanced.svg" width="2000"/>](img/img/../greenhouseCode/recordings/case%201/9neurons_confusionmatrix.svg) | [<img src="img/../greenhouseCode/recordings/case%201/16neurons_confusionmatriximbalanced.svg" width="2000"/>](img/cm_imbalanced.svg) |
+
+<p align="center">
+  <img width="1000" height="500" src="img/../greenhouseCode/recordings/case%201/16neuronsweight.svg" width="500">
+</p>
 
 
 <a name="rgb-feast"></a>
