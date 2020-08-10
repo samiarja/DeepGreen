@@ -34,86 +34,91 @@
 % YtestOutputMaxed2 = YtestOutputMaxed(sortIdx,1);
 % Ytest2 = Ytest(sortIdx,1);
 % 
-% TD = struct('x',single(TD(:,1)),'y',single(TD(:,2)), 'ts',TD(:,3));
+% events = struct('x',single(events(:,1)),'y',single(events(:,2)), 'p',single(events(:,3)), 'ts',events(:,4));
 % 
 % TD.ts = TD.ts - TD.ts(1,1);
 % TD.ts = TD.ts/1e+6;
 
+% Only for lines and circles
+% events = TD{5, 1};
+% events = struct('x',single(events(:,1)),'y',single(events(:,2)), 'p',single(events(:,3)), 'ts',events(:,4));
+
+
 e = []; idx = 0;
 
 % % if DAVIS
-% xs = 240;
-% ys = 180;
+xs = 346;
+ys = 260;
 
 %if Prophesee
-xs = 640;
-ys = 480;
+% xs = 640;
+% ys = 480;
 
 %if DAVIS
-% S = int64(zeros(xs,ys)); T = S; P = double(T);%-inf;
+S = int64(zeros(xs,ys)); T = S; P = double(T);%-inf;
 
 %if Prophesee
-S = zeros(xs,ys); T = S; P = double(T);
+% S = zeros(xs,ys); T = S; P = double(T);
 
-% ON and OFF eventinput
-nTD = numel(TD.x);
-seconds = TD.ts/1e6;
+% ON and OFF event input
+nTD = numel(events.x);
+% seconds = TD.ts/1e6;
 tau = 4*1e4;
-displayFreq = 0.5e4; % in units of time
-nextTimeSample = TD.ts(1,1)+displayFreq;
+displayFreq = .9e4; % in units of time
+nextTimeSample = events.ts(1,1)+displayFreq;
 % map = AdvancedColormap('kwk',150,[200 150 0]/200);
 fig = figure(2); clf;ss = imagesc(S);colormap(hot);
 
-writerObj = VideoWriter('~/sami/Dataset/avi/c0groundtruth.avi');
+writerObj = VideoWriter('~/sami/Dataset/avi/circlespattern.avi');
 writerObj.FrameRate = 30;
 open(writerObj);
 
-for idx = 60000:nTD
-    
-    x = TD.x(idx)+1;
-    y = TD.y(idx)+1;
-    t = TD.ts(idx);
-        label = TD.c(idx);
-    %     p = TD.p(idx);
+for idx = 8e4:3e5
+    x = events.x(idx)+1;
+    y = events.y(idx)+1;
+    t = events.ts(idx);
+    p = events.p(idx);
     %     colour = TD.colour(idx);
-%     label = TD.yPred(idx);
+    %     label = TD.c(idx);
+    %     label = TD.yPred(idx);
     %     if colour == 4
     %         if p == 1
-    %     if x > 85 && x < 270 && y > 80 && y < 200 % only when coloured events are used
-    % T maps the time of the most recent event to spatial pixel location
-    if label == 0
+    if x > 80 && x < 280 % only when coloured events are used
+        % T maps the time of the most recent event to spatial pixel location
+        %     if label == 0
         T(x,y) = t;
-        % P maps the polarity of the most recent event to spatial pixel location
-        %         P(x,y) = p;
+        P(x,y) = p;
         if t > nextTimeSample
             nextTimeSample = max(nextTimeSample + displayFreq,t);
             S = exp(double((T-t))/tau);
-            set(ss,'CData',S)
-            drawnow limitrate
-            xlabel("X-axis")
-            ylabel("Y-axis")
-            view([90 90])
-            colorbar
-            
-            title(['\fontsize{14} Ground Truth Class 0 (Lines) ', ...
-        '\newline \fontsize{10} \color{red} \it Tau = 4*1e4, DispFreq = 0.5e4', ...
-        '\newline \fontsize{10} \color{red} Timestamp:',num2str(t/1e6)]);
-    
-%             title(['\fontsize{14} ELM Class 1 (Circles) ', ...
-%         '\newline \fontsize{10} \color{red} \it Acc. 93.9%, Tau = 4*1e4, DispFreq = 0.5e4', ...
-%         '\newline \fontsize{10} \color{red} Timestamp:',num2str(t/1e6)]);
-    
-%             title([num2str(t/1e6), 'Class 1'])
-%             title(['Time is ',num2str(t/1e6),' s', 'Class 1'; 'Accuracy'; '90%'])
-%             set(gca,'visible','off')
-            set(findall(gca, 'type', 'text'), 'visible', 'on')
-%             darkBackground(fig,[0 0 0],[0 0 0])
+            set(ss,'CData',S);
+            drawnow limitrate;
+            xlabel("X-axis");
+            ylabel("Y-axis");
+            view([90 90]);
+            %         colorbar;
+            %         title(['\fontsize{14} Ground Truth Class 0 (Lines) ', ...
+            %             '\newline \fontsize{10} \color{red} \it Tau = 4*1e4, DispFreq = 0.5e4', ...
+            %             '\newline \fontsize{10} \color{red} Timestamp:',num2str(t/1e6)]);
+            %             title(['\fontsize{14} ELM Class 1 (Circles) ', ...
+            %         '\newline \fontsize{10} \color{red} \it Acc. 93.9%, Tau = 4*1e4, DispFreq = 0.5e4', ...
+            %         '\newline \fontsize{10} \color{red} Timestamp:',num2str(t/1e6)]);
+            title(['Time',num2str(t), 'idx:',num2str(idx)]);
+            %             title(['Time is ',num2str(t/1e6),' s', 'Class 1'; 'Accuracy'; '90%'])
+            %             set(gca,'visible','off')
+            set(findall(gca, 'type', 'text'), 'visible', 'on');
+            %             darkBackground(fig,[0 0 0],[0 0 0])
             F = getframe(gcf) ;
             writeVideo(writerObj, F);
         end
-        %             end
     end
+    %     end
     %     end
 end
 close(writerObj);
 fprintf('Sucessfully generated the video\n')
+
+%%
+initial = 1360000; % 323000
+final = 1683000;
+TD12 = struct('x',single(TD.x(initial:final)),'y',single(TD.y(initial:final)), 'p',single(TD.p(initial:final)), 'ts',TD.ts(initial:final));
