@@ -178,8 +178,8 @@ nTD = numel(TD.x);
 % ys = 180;
 
 %if Prophesee
-xs = 640;
-ys = 480;
+xs = 346;
+ys = 260;
 
 %if DAVIS
 % S = int64(zeros(xs,ys)); T = S; P = double(T);%-inf;
@@ -198,7 +198,7 @@ thresholdArray_all = [];
 R = 7;
 D = 2*R + 1; % D = 21
 %number of neurons
-nNeuron = 16;
+nNeuron = 9;
 binc = 1:nNeuron;
 %learning rate
 eta = 0.0005;
