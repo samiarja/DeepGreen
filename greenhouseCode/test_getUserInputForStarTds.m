@@ -17,12 +17,12 @@ versionNum                    = 1.3;
 %dataFolderName = '\ML\data\ATIS\dstgMoonShot\Data\dayLEO\atisDvsRec1\'; fileName   = 'canopus_streaks_1603_atis_tdCleaned.mat';prctHotPixelsToRemove        = [];%good
 %dataFolderName = '\ML\data\ATIS\dstgMoonShot\Data\dayLEO\'; tdFileName = 'canopus_streaks_td_cleaned.mat';prctHotPixelsToRemove        = [];%good
 
-%initialDataFolderName = '\ML\data\ATIS\dstgMoonShot\Data\userFiles\todoLili';  
+%initialDataFolderName = '\ML\data\ATIS\dstgMoonShot\Data\userFiles\todoLili';
 %initialDataFolderName = '\ML\data\ATIS\dstgMoonShot\SpaceFest\';  % for star fields using BSI
 %initialDataFolderName = 'E:\googleDrive\MATLAB\ML\data\ATIS\aritificialData';  % for ariticial dataset
 
 
- %initialTdFullPath = [getMyMatlabPath initialDataFolderName];     
+%initialTdFullPath = [getMyMatlabPath initialDataFolderName];
 initialTdFullPath = '/media/sami/USB DISK/mat/';
 
 SELECT_NEW_FILES = 0 ||  (~exist('userInputCellArray','var') ) || (~exist('userInputCellArrayRadius','var') );
@@ -79,14 +79,14 @@ if FORCE_GENERATE_NEW_DATA || (SELECT_NEW_FILES && selectedNewTdMatFileFlag) || 
 end
 if FORCE_GENERATE_NEW_TIME_SURF_ARRAY || (SELECT_NEW_FILES && selectedNewTdMatFileFlag) || ~exist('timeSurfaceArray','var')
     UserInputGettingParameters                        = [];
-    tauInSeconds                                      = 1; % in seconds%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    tauInSeconds                                      = 0.005; % in seconds%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     tauIn_uSecs                                       = tauInSeconds*1e6;
     UserInputGettingParameters.tau                    = tauIn_uSecs;
     
-%     UserInputGettingParameters.fullTdFileName         = oldFullPathName;
+    %     UserInputGettingParameters.fullTdFileName         = oldFullPathName;
     UserInputGettingParameters.userInputFullFileName  = userInputFullFileName;
     
-    sampleIntervalInSeconds                           = 0.01;%.01;% in seconds%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    sampleIntervalInSeconds                           = 0.005;%.01;% in seconds%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     sampleIntervalIn_uSecs                            = sampleIntervalInSeconds*1e6;
     UserInputGettingParameters.surfaceSampleInterval  = sampleIntervalIn_uSecs;
     UserInputGettingParameters.viewArray              = [90, -90]; % flip x-y axis
@@ -102,14 +102,14 @@ FORCE_GENERATE_NEW_USER_INPUT_ARRAY = 1;
 if FORCE_GENERATE_NEW_USER_INPUT_ARRAY || ~exist('userInputCellArray','var') && ~exist('userInputCellArrayRadius','var')
     if LOAD_USER_INPUT_CELL_ARRAY
         load(userInputFullFileName,'userInputCellArray','userInputCellArrayRadius','interpedUserInputCellArray','interpedUserInputCellRadiusArray','UserInputGettingParameters');%%%%%%%%%%%%%%%%%%%%%%%
-
-         userData = load(userInputFullFileName);
+        
+        userData = load(userInputFullFileName);
         if  isfield(userData,'UserInputGettingParameters')
             UserInputGettingParameters = userData.UserInputGettingParameters;
         else
             UserInputGettingParameters = nan;
         end
-       
+        
         if  isfield(userData,'userInputCellArray')
             userInputCellArray = userData.userInputCellArray;
         else
@@ -179,7 +179,7 @@ if FORCE_GENERATE_NEW_USER_INPUT_ARRAY || ~exist('userInputCellArray','var') && 
         userInputCellArray            = {};
         userInputCellArrayRadius      = {};
         objectClassCellArray          = {};
-        interpedUserInputCellArray    = {};   
+        interpedUserInputCellArray    = {};
         interpedUserInputCellRadiusArray  = {};
     end
     if ~isempty(userInputCellArray) && ~isempty(userInputCellArrayRadius)
@@ -209,7 +209,7 @@ if FORCE_GENERATE_NEW_USER_INPUT_ARRAY || ~exist('userInputCellArray','var') && 
         userInputCellArrayRadius{iUser}         = userInputRadiusArray;
         interpedUserInputCellArray{iUser} = linearInterpolateUserInputCellArrayRadiusData(userInputRadiusArray);
         
-        %%%%` 
+        %%%%`
         % Ask-----------------
         choice = questdlg('Do you want to Save the new user input data?','More User Input','Yes','No','No');
         switch choice

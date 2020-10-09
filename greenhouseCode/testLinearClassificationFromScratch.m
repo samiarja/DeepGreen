@@ -14,7 +14,7 @@ for ii = 1:nData
         Ytrain(ii,1)   = 1;
     end
 end
-
+% YoneHotEncoded = bsxfun(@eq, Ytrain(:), 1:max(Ytrain));
 % frozenWeight = rand(16,255);
 % Ytrain = eye(1000,1);
 % for i = 1:numel(Xtrain(:,1:end))

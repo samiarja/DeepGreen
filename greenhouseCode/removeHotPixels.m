@@ -33,8 +33,8 @@ nEvent = numel(td.x);
 tCell = cell(xMax,yMax);
 eventCount    = zeros(xMax,yMax);
 for ii = 1:nEvent
-    x = td.x(ii);
-    y = td.y(ii);
+    x = td.x(ii)+1;
+    y = td.y(ii)+1;
     t = td.ts(ii);    
     eventCount(x,y) = eventCount(x,y)+1;    
     tCell{x,y}(eventCount(x,y)) = t;
@@ -98,7 +98,6 @@ tdClean.p(invalidIndices) = [];
 tdClean.ts(invalidIndices) = [];   
 fprintf('%d events from %d hot pixels removed. %d Events left in TD. \n',nEventsRemovedDueToHot, numel(xHotPixelArray), numel(tdClean.x));
 
-
 % figure(452340);
 % imagesc(hotPixelImage);
 % colorbar; axis image;
@@ -126,5 +125,3 @@ fprintf('%d events from %d hot pixels removed. %d Events left in TD. \n',nEvents
 %
 % figure(452345);
 % imagesc(  hotPixelMeasure); colorbar; axis image;
-
-

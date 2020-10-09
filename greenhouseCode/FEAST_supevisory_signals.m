@@ -112,8 +112,8 @@ resultcountLabel2 = [countLabel2; labelOccurencesHistorgam2]
 idx = 0;
 nTD = numel(TD.x);
 
-xs = 640;
-ys = 480;
+xs = 346;
+ys = 260;
 
 S = zeros(xs,ys); T = S; P = double(T);
 
@@ -124,7 +124,7 @@ nextTimeSample = TD.ts(1,1)+displayFreq;
 thresholdArray_all = [];
 thresholdArray_all2 = [];
 
-R = 7;
+R = 5;
 D = 2*R + 1; % D = 15
 %number of neurons
 nNeuron = 4;
@@ -362,7 +362,7 @@ countNeuron = nan(2,nNeuron);count0 = 0;count1 = 0;
 displayFreq = 3e4; % For speed in units of time
 nextTimeSample = TD.ts(1,1)+displayFreq;
 
-nNeuron = 16;
+nNeuron = 20;
 
 T_Fd = zeros(round(size(T_F)./downSampleFactor))-inf;
 P_Fd = zeros(round(size(T_Fd))); 
@@ -370,91 +370,90 @@ T_FdSimple = T_Fd;
 P_FdSimple = P_Fd;
 beta = 0.5; oneMinusBeta = 1-beta;
 
-for idx = 1:nTD
+for idx = 1:numel(TD.ts)
     x = TD.x(idx)+1;
     y = TD.y(idx)+1;
     t = TD.ts(idx);
     p = TD.p(idx);
-    l = TD.c(idx);
+    %     l = events.c(idx);
     T(x,y) = t;
     P(x,y) = p;
     
-    %     if l == 1
-    if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
-        
-        ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
-        
-        ROI_norm             = ROI/norm(ROI);
-        ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
-        dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
-        [C,winnerNeuron ]       = max(dotProds);
-        
-        winnerNeuronArray(idx) = winnerNeuron;
-        
-        %         if TD.c(idx) == 1
-        %             count0 = count0 + 1;
-        %             countNeuron(1,winnerNeuron) = count0;
-        %         else
-        %             count1 = count1 + 1;
-        %             countNeuron(2,winnerNeuron) = count1;
-        %         end
-        
-        T_F(x,y,winnerNeuron) = t;
-        P_F(x,y,winnerNeuron) = p;
-        
-%         T_Fd_featureContexttest = T_F((x-1):(x+1),(y-1):(y+1),:);
-        
-        
-        if t > nextTimeSample
-            idx
-            winnerNeuron
+    if l == 0
+        if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
             
-            nextTimeSample = max(nextTimeSample + displayFreq,t);
+            ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
             
-            S_F = exp((T_F-t)/tau/3);
-            f1=figure(8);
-            f1.Name = 'Activation Surface at Inference';
-            for iNeuron = 1:nNeuron
-                subplot(sqNeuron,sqNeuron,iNeuron)
-                imagesc(S_F(:,:,iNeuron)); colormap(hot);
-                view([90 90]);
-                title("Activation Neuron:" + iNeuron)
-                set(gca,'visible','off');
-                set(findall(gca, 'type', 'text'), 'visible', 'on');
+            ROI_norm             = ROI/norm(ROI);
+            ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
+            dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
+            [C,winnerNeuron ]       = max(dotProds);
+            
+            winnerNeuronArray(idx) = winnerNeuron;
+            
+            %         if TD.c(idx) == 1
+            %             count0 = count0 + 1;
+            %             countNeuron(1,winnerNeuron) = count0;
+            %         else
+            %             count1 = count1 + 1;
+            %             countNeuron(2,winnerNeuron) = count1;
+            %         end
+            
+            T_F(x,y,winnerNeuron) = t;
+            P_F(x,y,winnerNeuron) = p;
+            
+            %         T_Fd_featureContexttest = T_F((x-1):(x+1),(y-1):(y+1),:);
+            
+            
+            if t > nextTimeSample
+                idx
+                winnerNeuron
                 
+                nextTimeSample = max(nextTimeSample + displayFreq,t);
+                
+                S_F = exp((T_F-t)/tau/3);
+                f1=figure(8);
+                f1.Name = 'Activation Surface at Inference';
+                for iNeuron = 1:nNeuron
+                    subplot(sqNeuron,sqNeuron,iNeuron)
+                    imagesc(S_F(:,:,iNeuron)); colormap(hot);
+                    view([90 90]);
+                    title("Activation Neuron:" + iNeuron)
+                    set(gca,'visible','off');
+                    set(findall(gca, 'type', 'text'), 'visible', 'on');
+                end
+                
+                DS_F = imresize(S_F,1/20);
+                f2=figure(9);
+                f2.Name = 'Downsampling at Inference';
+                for iNeuron = 1:nNeuron
+                    subplot(sqNeuron,sqNeuron,iNeuron)
+                    imagesc(DS_F(:,:,iNeuron)); colormap(hot);
+                    view([90 90]);
+                    title("Downsampled Neuron:" + iNeuron)
+                    set(gca,'visible','off');
+                    set(findall(gca, 'type', 'text'), 'visible', 'on');
+                end
+                
+                %             S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
+                %             DS_F = imresize(S_F,1/20);
+                %             f3=figure(10);
+                %             f3.Name = '3x3 receptive field at Inference';
+                %             for iNeuron = 1:nNeuron
+                %                 subplot(sqNeuron,sqNeuron,iNeuron)
+                %                 imagesc(S_Fd_featureContext(:,:,iNeuron)); colormap(hot);
+                %                 view([90 90]);
+                %                 title("3x3 RF Neuron:" + iNeuron)
+                %                 set(gca,'visible','off');
+                %                 set(findall(gca, 'type', 'text'), 'visible', 'on');
+                %
+                %             end
+                
+                eta = eta * 0.999;
+                drawnow
             end
-            
-            DS_F = imresize(S_F,1/20);
-            f2=figure(9);
-            f2.Name = 'Downsampling at Inference';
-            for iNeuron = 1:nNeuron
-                subplot(sqNeuron,sqNeuron,iNeuron)
-                imagesc(DS_F(:,:,iNeuron)); colormap(hot);
-                view([90 90]);
-                title("Downsampled Neuron:" + iNeuron)
-                set(gca,'visible','off');
-                set(findall(gca, 'type', 'text'), 'visible', 'on');
-            end
-            
-%             S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
-%             DS_F = imresize(S_F,1/20);
-%             f3=figure(10);
-%             f3.Name = '3x3 receptive field at Inference';
-%             for iNeuron = 1:nNeuron
-%                 subplot(sqNeuron,sqNeuron,iNeuron)
-%                 imagesc(S_Fd_featureContext(:,:,iNeuron)); colormap(hot);
-%                 view([90 90]);
-%                 title("3x3 RF Neuron:" + iNeuron)
-%                 set(gca,'visible','off');
-%                 set(findall(gca, 'type', 'text'), 'visible', 'on');
-%                 
-%             end
-            
-            eta = eta * 0.999;
-            drawnow
         end
     end
-    %     end
 end
 % 
 % fig3 = figure(56756);
@@ -488,7 +487,7 @@ tic;
 X_original = nan(nEvents,9*nNeuron);
 % coordinate = zeros(nEvents, 3);
 wFrozen = w2;
-downSampleFactor = 10;
+downSampleFactor = 20;
 
 xdMax = round(xs/downSampleFactor);
 ydMax = round(ys/downSampleFactor);
@@ -519,70 +518,6 @@ Radius = 7;
 % nextTimeSample = TD.ts(1,1)+displayFreq;
 toc;
 %% Pooling and flattening for feature from class 0 using weight
-tic;
-Valididx = 0;
-coordinate0 = zeros(nEvents, 3);
-for idx = 1:nEvents
-    x = TD.x(idx);
-    y = TD.y(idx);
-    xd = round(x/downSampleFactor);
-    yd = round(y/downSampleFactor);
-    l = TD.c(idx);
-    p = TD.p(idx);
-    t =  TD.ts(idx);
-    
-    if l == 0
-        T(x,y) = t;
-        P(x,y) = p;
-        
-        if (x-R>0) && (x+R<xs) && (y-R>0) && (y+R<ys)
-            
-            ROI = P(x-R:x+R,y-R:y+R).*exp(double((T(x-R:x+R,y-R:y+R)-t))/tau);
-            
-            if xd>1 && yd>1 &&xd<xdMax && yd<ydMax  % figure out how to find xydMax
-                ROI_norm             = ROI/norm(ROI);
-                ROI_ARRAY       = ROI_norm(:)*ones(1,nNeuron);
-                dotProds        = sum(bsxfun(@times,wFrozen,ROI_ARRAY),1);
-                [C,winnerNeuron ]       = max(dotProds);
-                
-                Valididx = Valididx + 1;
-                winnerNeuronArray(Valididx) = winnerNeuron;
-                
-                T_F(x,y,winnerNeuron) = t;
-                P_F(x,y,winnerNeuron) = p;
-                
-                T_FdSimple(xd,yd,winnerNeuron) = t;
-                P_FdSimple(xd,yd,winnerNeuron) = p;
-                
-                if isinf(T_FdSimple(xd,yd,winnerNeuron))
-                    T_FdSimple(xd,yd,winnerNeuron) = t;
-                    T_FdSimple(xd,yd,winnerNeuron) = p;
-                else
-                    T_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*T_FdSimple(xd,yd,winnerNeuron) + beta*t;
-                    P_FdSimple(xd,yd,winnerNeuron) = oneMinusBeta*P_FdSimple(xd,yd,winnerNeuron) + beta*p;
-                end
-                
-                % at each event (regardless of label) populate X with the
-                % neighbouring 8 pixels from the downsampled feature map
-                T_Fd_featureContext = T_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
-                P_Fd_featureContext = P_FdSimple((xd-1):(xd+1),(yd-1):(yd+1),:);
-                
-                S_Fd_featureContext = exp(double(T_Fd_featureContext-t)/tau);
-                coordinate0(Valididx,1)=x;coordinate0(Valididx,2)=y;coordinate0(Valididx,3)=t;
-                %             S_Fd_featureContext = P_Fd_featureContext.*exp(double(T_Fd_featureContext-t)/tau);
-                X_original(Valididx,:) = S_Fd_featureContext(:)'; % X matrix. to later be split into Xtrain and Xtest
-            end
-        end
-    end
-end
-
-X = single(X_original);
-findNaN = find(isnan(X));
-X = X(1:findNaN(1)-1,:);
-figure(76767);imagesc(X)
-X0 = X;
-toc;
-%% Pooling and flattening for feature from class 1 using weight2
 tic;
 Valididx = 0;
 coordinate1 = zeros(nEvents, 3);
@@ -643,25 +578,26 @@ end
 X = single(X_original);
 findNaN = find(isnan(X));
 X = X(1:findNaN(1)-1,:);
-figure(76767);imagesc(X)
+coordinate1 = coordinate1(1:findNaN(1)-1,:);
+% figure(76767);imagesc(X)
 X1 = X;
 toc;
 %% Setup feature data for the classifier
-
+tic;
 % if length(X0) < length(X1)
 %     X1 = X1(1:length(X0),:);
 % else
 %     X0 = X0(1:length(X1),:);
 % end
-
+% 
 % figure(76768);imagesc(X0)
 % figure(76769);imagesc(X1)
 
 X = [X1;X0];
 
 coordinate0 = coordinate0(1:length(X0),:);
-
 coordinate1 = coordinate1(1:length(X1),:);
+
 coordinate = [coordinate1;coordinate0];
 
 Y = nan(length(X),1);
@@ -680,7 +616,7 @@ Y = single(Y);
 xCoordArray = coordinate(:,1);
 yCoordArray = coordinate(:,2);
 tsCoordArray = coordinate(:,3);
-
+toc;
 %% Cross validation Train/Test
 tic;
 nEventAfterSkip = size(X,1);
@@ -709,6 +645,12 @@ Ytest(find(isnan(Ytest)),1)=0;
 Ytrain(:,2)   = ~(Ytrain(:,1));
 Ytest(:,2) = ~(Ytest(:,1));
 toc;
+% coordinate1 = coordinate1(1:length(X0),:);% coordinate1 = coordinate1(1:length(X0),:);
+% 
+% coordinate1 = coordinate1(1:length(X1),:);
+
+% 
+% coordinate1 = coordinate1(1:length(X1),:);
 
 %% Classification linear/ELM
 
@@ -747,6 +689,10 @@ yCoordArraytestFinal = yCoordArraytest(sortIdx);
 YtestOutputMaxedFinal = YtestOutputMaxed(sortIdx,1);
 YtestFinal = Ytest(sortIdx,1);
 
-newArray = struct('x',single(xCoordArraytestFinal),'y',single(yCoordArraytestFinal), 'ts',tsCoordArraytestArray, 'yPred',single(YtestOutputMaxedFinal), 'yTest',single(YtestFinal));
+% newArray = struct('x',single(xCoordArraytestFinal),'y',single(yCoordArraytestFinal), 'ts',tsCoordArraytestArray, 'yPred',single(YtestOutputMaxedFinal), 'yTest',single(YtestFinal));
+
+% only if you want to convert it to .es and make ppm frames from it
+finalPredictedEvents = struct('x',single(xCoordArraytestFinal),'y',single(yCoordArraytestFinal), 'p',single(YtestOutputMaxedFinal), 'ts',tsCoordArraytestArray);
+
 toc;
 

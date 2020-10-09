@@ -205,7 +205,7 @@ for idx = 1:99
     DurationAllG = [DurationAllG;greenCircle(end,1) - greenCircle(1,1)]; % All
     DurationAllB = [DurationAllB;blueCircle(end,1) - blueCircle(1,1)]; % All
     
-    XmeanG_R = [XmeanG_R;mean(greenCircle_redEvents(:,2))];
+    XmeanG_R = [XmeanG_R;mean(greenCircle_redEvents(:,2))]; % 
     XmeanG_G1 = [XmeanG_G1;mean(greenCircle_green1Events(:,2))];
     XmeanG_G2 = [XmeanG_G2;mean(greenCircle_green2Events(:,2))];
     XmeanG_B = [XmeanG_B;mean(greenCircle_blueEvents(:,2))];
@@ -634,10 +634,10 @@ spacing = 0.06705;
 
 figure(2);
 hAxis(1) = subplot(3,3,1);
-plot(ONEventG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(ONEventAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(ONEventR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(ONEventB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(ONEventAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(ONEventAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -654,10 +654,10 @@ set(gca, 'Position', pos);
 % set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(2) = subplot(3,3,2);
-plot(OFFEventG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(OFFEventAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(OFFEventR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(OFFEventB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(OFFEventAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(OFFEventAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -672,10 +672,10 @@ set(gca, 'Position', pos);
 set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(3) = subplot(3,3,3);
-plot(ONOFFRatioG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(ONOFFRatioAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(ONOFFRatioR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(ONOFFRatioB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(ONOFFRatioAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(ONOFFRatioAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -690,10 +690,10 @@ set(gca, 'Position', pos);
 set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(4) = subplot(3,3,4);
-plot(TotalEventG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(TotalEventAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(TotalEventR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(TotalEventB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(TotalEventAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(TotalEventAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -707,10 +707,10 @@ set(gca, 'Position', pos);
 % set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(5) = subplot(3,3,5);
-plot(DurationG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(DurationAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(DurationR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(DurationB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(DurationAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(DurationAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -721,10 +721,10 @@ title('Duration', 'FontSize', fontSize, 'Interpreter', 'None');
 legend('Green Circle', 'Red Circle', 'Blue Circle', 'northwest');set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(6) = subplot(3,3,6);
-plot(XmeanG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(XmeanAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(XmeanR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(XmeanB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(XmeanAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(XmeanAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -738,10 +738,10 @@ set(gca, 'Position', pos);
 % set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(7) = subplot(3,3,7);
-plot(YmeanG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(YmeanAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(YmeanR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(YmeanB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(YmeanAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(YmeanAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -756,10 +756,10 @@ set(gca, 'Position', pos);
 % set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(8) = subplot(3,3,8);
-plot(XstdvG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(XstdvAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(XstdvR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(XstdvB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(XstdvAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(XstdvAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);
@@ -774,10 +774,10 @@ set(gca, 'Position', pos);
 set(gcf, 'Units', 'Normalized', 'Outerposition', [0, 0, 1, 1]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 hAxis(9) = subplot(3,3,9);
-plot(YstdvG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(YstdvAllG(:, 1), 'ro', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 hold on;
-plot(YstdvR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
-plot(YstdvB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(YstdvAllR(:, 1), 'bo', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
+plot(YstdvAllB(:, 1), 'go', 'LineWidth', lineWidth, 'MarkerSize', markerSize);
 grid on;
 % xlim([0, 6]);
 % ylim([0, 6]);

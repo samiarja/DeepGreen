@@ -21,7 +21,7 @@ for idx = 1:55
     
     allCircle = allCircle.events(findTimeTwoSecond,:);
     
-    findBoundaryCoordinateCircle = find(allCircle(:, 2) > 200 & allCircle(:, 3) < 150); % y > 160 && x < 155 && x > 45
+    findBoundaryCoordinateCircle = find(allCircle(:, 2) > 200 & allCircle(:, 3) < 150); % y < 150 && x > 200
     findBoundaryCoordinateTriangle = find(allCircle(:, 2) > 216 & allCircle(:, 2) < 316 & allCircle(:, 3) > 160); % y > 160 && x > 216 && x < 316
     findBoundaryCoordinateRectangle = find(allCircle(:, 2) > 15 & allCircle(:, 2) < 115 & allCircle(:, 3) < 100); % y < 100 && x < 115 && x > 15
     findBoundaryCoordinateStar = find(allCircle(:, 2) > 35 & allCircle(:, 2) < 135 & allCircle(:, 3) > 160);
