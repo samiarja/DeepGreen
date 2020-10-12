@@ -3,7 +3,7 @@ All the code for my master degree at ICNS -->
 
 # Classification with FEAST network:
 
-This analysis aims to demonstrate how the network works on various conditions and present the associated results.
+In this experiment, we demonstrated the capability of the network on various recording conditions. For each recording, we presented the statistical results with the classification output in a video.  
 
 ## 1st recording condition:
 
@@ -36,9 +36,9 @@ Class label 1         |  Class label 0 - Everything else |
   <img width="500" height="500" src="greenhouseCode/recordings/Condition1234/Condition1/CONDITION1_FINALVIDEOoutputGIF.gif" width="500">
 </p>
 
-In this example, the network predicted circle events with 89.49% accuracy with very few false positive as shown on the left side of the recording, where few events on the edges of the left rectangle were falsely predicted as circles. The reason behind the few misclassified events might be from the labelled data where some edges of the rectangle were labelled with the circle.
+In this example, the network achieved 89.49% accuracy with very few false positive as shown on the left side of the recording, for instance, few events on the edges of the left rectangle were falsely predicted as circles. The reason behind the few misclassified events might be from the labelled data where some edges of the rectangle were labelled with the circle.
 
-Value associated with each evaluation metrix.
+Results each evaluation metrix
 
 <table><thead><tr><th rowspan="2"></th><th colspan="2" rowspan="2">Accuracy</th><th colspan="2">Sensitivity</th><th colspan="2">Specificity</th><th colspan="2">Informedness</th></tr><tr><td>Class 1</td><td>Class 0</td><td>Class 1</td><td>Class 0</td><td>Class 1</td><td>Class 0</td></tr></thead><tbody><tr><td>Linear Classifier</td><td colspan="2">89.49</td><td>0.6305</td><td>0.9590</td><td>0.9590</td><td>0.6305</td><td>0.5895</td><td>0.5895</td></tr></tbody></table>
 
